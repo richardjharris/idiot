@@ -28,13 +28,13 @@ public class Hand {
     this.sh = sh;
     this.back = back;
     this.g = g;
-    ontable[0] = new Point(103, 350);
-    ontable[1] = new Point(188, 350);
-    ontable[2] = new Point(276, 350);
+    ontable[0] = new Point((int)(103*1.5), (int)(350*1.5));
+    ontable[1] = new Point((int)(188*1.5), (int)(350*1.5));
+    ontable[2] = new Point((int)(276*1.5), (int)(350*1.5));
 
-    tableBox[0] = new Rectangle(103, 350, 71, 96);
-    tableBox[1] = new Rectangle(188, 350, 71, 96);
-    tableBox[2] = new Rectangle(276, 350, 71, 96);
+    tableBox[0] = new Rectangle((int)(103*1.5), (int)(350*1.5), (int)(71*1.5), (int)(96*1.5));
+    tableBox[1] = new Rectangle((int)(188*1.5), (int)(350*1.5), (int)(71*1.5), (int)(96*1.5));
+    tableBox[2] = new Rectangle((int)(276*1.5), (int)(350*1.5), (int)(71*1.5), (int)(96*1.5));
   }
 
   public Hand() {}
@@ -113,7 +113,7 @@ public class Hand {
         y = 515;
       }
 
-      hand[n].drawCard2(x, y);
+      hand[n].drawCard2((int)(x * 1.5), (int)(y * 1.5));
 
       // creating cardBox
 
@@ -137,7 +137,7 @@ public class Hand {
       if (width > 71) width = 71;
       if (n + 2 == cardCount || n == 21 || n == 42) width = 71;
 
-      cardBox[n] = new Rectangle(x, y, width, height);
+      cardBox[n] = new Rectangle((int)(x * 1.5), (int)(y * 1.5), (int)(width * 1.5), (int)(height * 1.5));
     }
 
     for (int n = 0; n < 3; n++)
