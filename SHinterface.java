@@ -3,10 +3,7 @@ import java.awt.Color;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.*;
-import java.io.*;
-import java.net.*;
 import javax.swing.*;
-import javax.swing.JComponent.*;
 
 /*-------------------------------
  This is a Shithead(card game) Program
@@ -43,6 +40,8 @@ Email: cavenaghweb@hotmail.com
 
 class SHinterface extends JFrame
     implements ActionListener, MouseMotionListener, MouseListener, WindowListener {
+
+  private static final long serialVersionUID = 1L;
 
   JLabel image;
   JTextArea msg;
@@ -323,7 +322,7 @@ class SHinterface extends JFrame
                 + " can create a new connection");
       } else {
         DealerD dealerD = new DealerD(this);
-        dealerD.show();
+        dealerD.setVisible(true);
         playersName = dealerD.getName();
         if (playersName != "cancel#*#") {
           if (dealerD.fastgame()) addMsg("Fast Game Selected");
@@ -357,7 +356,7 @@ class SHinterface extends JFrame
       score.display();
     } else if (label.equals("About")) {
       InfoD info = new InfoD(this);
-      info.show();
+      info.setVisible(true);
     } else if (label.equals("Rules")) {
       try {
         Runtime.getRuntime()
@@ -389,7 +388,7 @@ class SHinterface extends JFrame
                 + " can create a new connection");
       } else {
         DealerD dealerD = new DealerD(this);
-        dealerD.show();
+        dealerD.setVisible(true);
         playersName = dealerD.getName();
         if (!(playersName == "cancel#*#" || playersName.equals(""))) {
           if (dealerD.fastgame()) addMsg("Fast Game Selected");
@@ -418,7 +417,7 @@ class SHinterface extends JFrame
 
           try { // outputting host name and ip address
             java.net.InetAddress i = java.net.InetAddress.getLocalHost();
-            java.net.InetAddress[] add = i.getAllByName(i.getHostName());
+            java.net.InetAddress[] add = java.net.InetAddress.getAllByName(i.getHostName());
 
             addMsg("Host Name: " + i.getHostName()); // name
             addMsg("IP Address: " + i.getHostAddress()); // local IP address
@@ -441,7 +440,7 @@ class SHinterface extends JFrame
                 + " can create a new connection");
       } else {
         PlayerD playerD = new PlayerD(this);
-        playerD.show();
+        playerD.setVisible(true);
         playersName = playerD.getName();
         String servername = playerD.getServer();
         if (!(playersName == "cancel"

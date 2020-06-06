@@ -11,6 +11,8 @@ import javax.swing.*;
  */
 public class Speed extends JDialog implements ActionListener {
 
+  private static final long serialVersionUID = 1L;
+
   JLabel label = new JLabel("Select AI Speed", JLabel.CENTER);
 
   JSlider speed;
@@ -75,7 +77,7 @@ public class Speed extends JDialog implements ActionListener {
   }
 
   public int getSpeed() {
-    show();
+    setVisible(true);
     return speedint;
   }
 }

@@ -11,6 +11,8 @@ import javax.swing.*;
  */
 public class PlayerD extends JDialog implements ActionListener {
 
+  private static final long serialVersionUID = 1L;
+
   JLabel question1 = new JLabel("Name:");
 
   JLabel question2 = new JLabel("Server:");

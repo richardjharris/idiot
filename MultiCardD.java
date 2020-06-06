@@ -11,6 +11,8 @@ import javax.swing.*;
  */
 public class MultiCardD extends JDialog implements ActionListener {
 
+  private static final long serialVersionUID = 1L;
+
   JLabel question = new JLabel("How many cards would you like to play ?");
 
   JButton buttons[] = new JButton[4];
@@ -66,7 +68,7 @@ public class MultiCardD extends JDialog implements ActionListener {
   }
 
   public int getChoice() {
-    show();
+    setVisible(true);
     return choice;
   }
 }

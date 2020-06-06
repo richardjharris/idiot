@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 /**
@@ -10,6 +9,8 @@ import javax.swing.*;
  *     <p>Website: http://home.pacific.net.au/~cavenagh/SH/ Email: cavenaghweb@hotmail.com
  */
 public class InfoD extends JDialog {
+
+  private static final long serialVersionUID = 1L;
 
   JLabel title = new JLabel("SHITHEAD", JLabel.CENTER);
 

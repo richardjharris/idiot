@@ -11,6 +11,8 @@ import javax.swing.*;
  */
 public class Score extends JDialog implements ActionListener {
 
+  private static final long serialVersionUID = 1L;
+
   JLabel position[] = new JLabel[5];
   JLabel nameL = new JLabel("Name", JLabel.CENTER);
   JLabel firstL = new JLabel("First ");
@@ -212,6 +214,6 @@ public class Score extends JDialog implements ActionListener {
   public void display() {
     Point p = parent.getLocation();
     setLocation((int) p.getX() + 80, (int) p.getY() + 100);
-    show();
+    setVisible(true);
   }
 }

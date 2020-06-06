@@ -11,17 +11,19 @@ import javax.swing.*;
  */
 public class SwapD extends JDialog implements ActionListener {
 
+  private static final long serialVersionUID = 1L;
+
   JLabel handLabel = new JLabel("Cards in Hand", JLabel.CENTER);
   JLabel tableLabel = new JLabel("Cards on Table", JLabel.CENTER);
 
-  JList hand;
-  JList table;
+  JList<String> hand;
+  JList<String> table;
 
   JScrollPane handScroll;
   JScrollPane tableScroll;
 
-  private DefaultListModel handModel;
-  private DefaultListModel tableModel;
+  private DefaultListModel<String> handModel;
+  private DefaultListModel<String> tableModel;
 
   JButton left = new JButton("<<");
   JButton right = new JButton(">>");
@@ -75,8 +77,8 @@ public class SwapD extends JDialog implements ActionListener {
 
     c.gridy = 2;
 
-    handModel = new DefaultListModel();
-    tableModel = new DefaultListModel();
+    handModel = new DefaultListModel<String>();
+    tableModel = new DefaultListModel<String>();
 
     // adding card string value to JList
     for (int n = 0; n < 3; n++) {
@@ -84,8 +86,8 @@ public class SwapD extends JDialog implements ActionListener {
       tableModel.addElement(ontable.getCard(n).getStringValue());
     }
 
-    hand = new JList(handModel);
-    table = new JList(tableModel);
+    hand = new JList<String>(handModel);
+    table = new JList<String>(tableModel);
 
     hand.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -163,7 +165,7 @@ public class SwapD extends JDialog implements ActionListener {
   }
 
   public boolean display() {
-    show();
+    setVisible(true);
     return swapB;
   }
 

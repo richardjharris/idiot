@@ -1597,7 +1597,7 @@ class Dealer {
     public void run() {
 
       try { // pause before move played
-        ait.sleep(aipause);
+        Thread.sleep(aipause);
       } catch (Exception e) {
         sh.addMsg("AI thead sleep error " + e);
       }

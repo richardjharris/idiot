@@ -11,6 +11,8 @@ import javax.swing.*;
  */
 public class DealerD extends JDialog implements ActionListener {
 
+  private static final long serialVersionUID = 1L;
+
   JLabel question1 = new JLabel("Name:");
   JLabel title = new JLabel("Game Options:");
 
