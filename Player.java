@@ -63,11 +63,7 @@ class Player {
   Score score; // scoreboard
   int position = 1;
 
-  Player(
-      SHinterface sh,
-      Graphics g,
-      Hand hand,
-      Score score) {
+  Player(SHinterface sh, Graphics g, Hand hand, Score score) {
     this.sh = sh;
     this.g = g;
     this.hand = hand;

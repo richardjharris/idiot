@@ -1,24 +1,13 @@
-import java.awt.MediaTracker;
 import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Toolkit;
-import java.awt.geom.AffineTransform;
+import java.awt.MediaTracker;
 import java.awt.image.BufferedImage;
-import java.awt.image.MemoryImageSource;
-import java.awt.image.PixelGrabber;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.imageio.ImageIO;
 
-import java.awt.Image;
-
-/**
- * Holds all images.
- */
+/** Holds all images. */
 public class ImageManager {
   private static final String cardsPath = "cards/";
   private static final String cardBackFilename = cardsPath + "blue_back.png";
@@ -32,9 +21,9 @@ public class ImageManager {
 
   // These are in the same numbered order as the other SH code.
   // suits: 1-4
-  private String[] suits = { "H", "S", "D", "C" };
+  private String[] suits = {"H", "S", "D", "C"};
   // ranks: 2-10, 11(J), 12(Q), 13(K), 14(A)
-  private String[] ranks = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+  private String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
   ImageManager(Component parent) throws InterruptedException, IOException {
     MediaTracker tracker = new MediaTracker(parent);
@@ -46,18 +35,18 @@ public class ImageManager {
     files.add(pointerFilename);
     files.add(burntFilename);
 
-    for (String suit: suits) {
-      for (String rank: ranks) {
+    for (String suit : suits) {
+      for (String rank : ranks) {
         files.add(cardsPath + rank + suit + ".png");
       }
     }
 
-    for (String file: files) {
+    for (String file : files) {
       BufferedImage image = ImageIO.read(this.getClass().getResource(file));
       images.put(file, image);
       tracker.addImage(image, 1);
     }
-    
+
     tracker.waitForAll();
 
     // Produce rotated pointer images
@@ -98,9 +87,7 @@ public class ImageManager {
     return rotateClockwise90(getCardFront(suit, rank));
   }
 
-  /**
-   * Returns the pointer image, rotated for the specified player (0-3)
-   */
+  /** Returns the pointer image, rotated for the specified player (0-3) */
   BufferedImage getPointer(int playerNo) {
     return pointer[playerNo];
   }
