@@ -460,7 +460,7 @@ class SHinterface extends JFrame
 
     try {
       SHinterface frame = new SHinterface();
-      frame.setTitle("S-H");
+      frame.setTitle("Shithead");
       frame.setResizable(false);
 
       frame.pack();
