@@ -483,7 +483,6 @@ class Dealer {
         (int) pointerpoints[whosturn].getX(),
         (int) pointerpoints[whosturn].getY(),
         sh);
-    if (sh.smallscreen()) sh.scalepic();
     sh.repaint();
   }
 

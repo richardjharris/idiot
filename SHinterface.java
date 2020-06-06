@@ -58,10 +58,6 @@ class SHinterface extends JFrame
   Graphics g;
   BufferedImage offscreen;
   ImageIcon imageI;
-  // for smaller screens
-  Image offscreen2;
-  Graphics g2;
-  Graphics2D g2d;
 
   boolean player1 = false; // is 1 player game running
   boolean player2 = false; // is 2 player game running
@@ -88,8 +84,6 @@ class SHinterface extends JFrame
 
   Point centre1;
 
-  Dimension screenSize;
-
   ImageManager imageManager;
 
   SHinterface() {
@@ -107,31 +101,7 @@ class SHinterface extends JFrame
 
     hand = new Hand(this, imageManager.getCardBack(), g);
 
-    // screen resolution
-    screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    // screenSize.width = 800;
-
-    if (screenSize.width < 1024) { // resizing image if to big for screen
-      offscreen2 = new BufferedImage(338, 413, BufferedImage.TYPE_3BYTE_BGR);
-      // offscreen2 = offscreen;
-
-      g2 = offscreen2.getGraphics();
-      g2d = (Graphics2D) g2;
-      AffineTransform at = new AffineTransform();
-      at.scale(0.75, 0.75);
-      // AffineTransform toCenterAt = new AffineTransform();
-      // toCenterAt.concatenate(at);
-      // toCenterAt.translate(-(r.width/2), -(r.height/2));
-      g2d.transform(at);
-      g2d.drawImage(offscreen, 0, 0, null);
-      // g2.drawImage(offscreen, 0, 0, 338, 413, null);
-      // offscreen2 = offscreen.getScaledInstance(338, 413, Image.SCALE_FAST);
-      imageI = new ImageIcon(offscreen2);
-      // offscreen2 = this.createImage(338, 413);
-      // setImageSize(338, 413);
-      // repaint();
-      // imageI = new ImageIcon(offscreen.getScaledInstance(338, 413, Image.SCALE_SMOOTH));
-    } else imageI = new ImageIcon(offscreen);
+    imageI = new ImageIcon(offscreen);
 
     image = new JLabel(imageI);
 
@@ -141,7 +111,6 @@ class SHinterface extends JFrame
 
     // Construction Menu
     menuBar = buildMenuBar();
-
 
     addWindowListener(this);
 
@@ -195,9 +164,6 @@ class SHinterface extends JFrame
     c.gridy = 2;
     c.weighty = 0.0;
     panel.add(input, c);
-
-    addMsg("Detected Screen Size: " + screenSize.width + "x" + screenSize.height);
-    if (screenSize.width < 1024) addMsg("For optimal graphics use 1024x768 resolution");
 
     score = new Score(this);
   }
@@ -406,41 +372,14 @@ class SHinterface extends JFrame
     this.myTurn = myTurn;
   }
 
-  // resizing image if to big for screen
-  public void scalepic() {
-    // g2.drawImage(offscreen, 0, 0, 338, 413, null);
-    // AffineTransform at = new AffineTransform();
-    // at.scale(0.75, 0.75);
-    // g2d.transform(at);
-    // g2d.drawImage(offscreen, 0, 0, null);
-    // double temp = System.currentTimeMillis();
-    g2.drawImage(offscreen, 0, 0, null);
-    // addMsg("Time: " + (System.currentTimeMillis() - temp)/1000);
-  }
-
-  public boolean smallscreen() {
-    if (screenSize.width < 1024) return true;
-    return false;
-  }
-
   public void repaint() {
-    // if(screenSize.width < 1024){
-    // offscreen2 = offscreen.getScaledInstance(338, 413, Image.SCALE_FAST);
-    // imageI.setImage(offscreen2);
-    // }
     panel.repaint();
-    // panel.update();
   }
 
   public void mouseMoved(MouseEvent me) {
     // ajusting so mouse points are over image
     mouseX = me.getX() - 5;
     mouseY = me.getY() - 45;
-    if (screenSize.width < 1024) { // scaling mouse movement if screen to big
-      mouseX = mouseX * 100 / 75;
-      mouseY = mouseY * 100 / 75;
-    }
-    // addMsg("X: " + mouseX + " Y: " + mouseY);
   }
 
   public void mouseDragged(MouseEvent e) {}
