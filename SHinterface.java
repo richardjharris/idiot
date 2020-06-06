@@ -238,14 +238,8 @@ class SHinterface extends JFrame
       InfoD info = new InfoD(this);
       info.setVisible(true);
     } else if (label.equals("Rules")) {
-      try {
-        Runtime.getRuntime()
-            .exec("cmd.exe /c start iexplore http://home.pacific.net.au/~cavenagh/SH/rules.html");
-      } catch (Exception e) {
-        addMsg(
-            "Error launching Internet Explorer.  Please visit"
-                + " http://home.pacific.net.au/~cavenagh/SH/rules.html");
-      }
+      RulesD rules = new RulesD(this);
+      rules.setVisible(true);
     } else if (label.equals("AI Speed")) {
       if (dealer != null) {
         Speed speed = new Speed(this, dealer.getAIPause());
@@ -556,7 +550,7 @@ class SHinterface extends JFrame
     menuBar.add(menu);
 
     menuItem = new JMenuItem("Rules", KeyEvent.VK_R);
-    menuItem.getAccessibleContext().setAccessibleDescription("Who to play");
+    menuItem.getAccessibleContext().setAccessibleDescription("How to play");
     menuItem.addActionListener(this);
     menu.add(menuItem);
 
