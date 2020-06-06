@@ -25,7 +25,7 @@ someone else wants to do it great.  I only have a few requests listed below.
 
 1.	Any new versions of the program I would like to remain open source
 2.	Improved versions are emailed to me so that can be added to my site for Shithead player 
-    that don’t have the time or skill to implement changes themselves
+    that don't have the time or skill to implement changes themselves
 3.	I'm still given some form of credit for the program's creation (even if only as a footnote)
 
 
