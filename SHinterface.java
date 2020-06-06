@@ -56,13 +56,6 @@ class SHinterface extends JFrame
   JMenuItem menuItem;
   JRadioButtonMenuItem rbMenuItem;
 
-  Image cardspic;
-  Image back;
-  Image backSW;
-  Image title;
-  Image pointer[] = new Image[4];
-  Image burntPic;
-
   // Graphics buffer stuff
   Graphics g;
   BufferedImage offscreen;
@@ -99,45 +92,22 @@ class SHinterface extends JFrame
 
   Dimension screenSize;
 
+  ImageManager imageManager;
+
   SHinterface() {
-
-    // Loading Images
-    MediaTracker tracker = new MediaTracker(this); // Used to track loading of image
-    Toolkit toolkit = Toolkit.getDefaultToolkit();
-
-    // loading images from jar file
-    cardspic = toolkit.getImage(this.getClass().getResource("cards.gif"));
-    back = toolkit.getImage(this.getClass().getResource("back.gif"));
-    backSW = toolkit.getImage(this.getClass().getResource("backSW.gif"));
-    title = toolkit.getImage(this.getClass().getResource("SHtitle.jpg"));
-    pointer[0] = toolkit.getImage(this.getClass().getResource("pointer.gif"));
-    burntPic = toolkit.getImage(this.getClass().getResource("burnt.jpg"));
-
-    tracker.addImage(cardspic, 1);
-    tracker.addImage(back, 1);
-    tracker.addImage(backSW, 1);
-    tracker.addImage(title, 1);
-    tracker.addImage(pointer[0], 1);
-    tracker.addImage(burntPic, 1);
-
     try {
-      // Waiting until image loaded.
-      tracker.waitForAll();
-    } catch (InterruptedException e) {
+      imageManager = new ImageManager(this);
+    } catch (Exception e) {
       msg.setText("Load Error " + e);
     }
 
-    pointer[3] = rotatePointer(pointer[0]);
-    pointer[2] = rotatePointer(pointer[3]);
-    pointer[1] = rotatePointer(pointer[2]);
-
     offscreen = new BufferedImage(450, 550, BufferedImage.TYPE_3BYTE_BGR);
     g = offscreen.getGraphics();
-    g.drawImage(title, -40, 120, this);
+    g.drawImage(imageManager.getTitle(), -40, 120, this);
     g.setColor(Color.white);
     g.drawLine(0, 450, 450, 450);
 
-    hand = new Hand(this, back, g);
+    hand = new Hand(this, imageManager.getCardBack(), g);
 
     // screen resolution
     screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -332,17 +302,12 @@ class SHinterface extends JFrame
           dealer =
               new Dealer(
                   this,
-                  cardspic,
                   g,
                   hand,
-                  back,
-                  backSW,
                   dealerD.fastgame(),
                   dealerD.seven(),
                   dealerD.nine(),
                   dealerD.swap(),
-                  pointer,
-                  burntPic,
                   score);
           dealer.onePlayer(playersName);
           imServer = true;
@@ -400,17 +365,12 @@ class SHinterface extends JFrame
           dealer =
               new Dealer(
                   this,
-                  cardspic,
                   g,
                   hand,
-                  back,
-                  backSW,
                   dealerD.fastgame(),
                   dealerD.seven(),
                   dealerD.nine(),
                   dealerD.swap(),
-                  pointer,
-                  burntPic,
                   score);
           dealer.createConnection(playersName);
           imServer = true;
@@ -449,7 +409,7 @@ class SHinterface extends JFrame
             || servername.equals(""))) {
           message = new Message(this);
           message.createConnection(servername, playersName);
-          player = new Player(this, cardspic, g, hand, back, backSW, burntPic, pointer, score);
+          player = new Player(this, g, hand, score);
           player.createConnection(servername, playersName);
         }
       }
@@ -482,33 +442,14 @@ class SHinterface extends JFrame
     g.setColor(Color.black);
     g.fillRect(0, 0, 450, 550);
     g.setColor(Color.white);
-    g.drawImage(title, -40, 120, this);
+    g.drawImage(imageManager.getTitle(), -40, 120, this);
     g.setColor(Color.white);
     g.drawLine(0, 450, 450, 450);
     repaint();
   }
 
-  private Image rotatePointer(Image img) {
-
-    Image rot = null;
-
-    int buffer[] = new int[15 * 15];
-    int rotate[] = new int[15 * 15];
-
-    PixelGrabber grabber = new PixelGrabber(img, 0, 0, 15, 15, buffer, 0, 15);
-    try {
-      grabber.grabPixels();
-    } catch (InterruptedException e) {
-      addMsg("Rotate image error " + e);
-    }
-    for (int y = 0; y < 15; y++) {
-      for (int x = 0; x < 15; x++) {
-        rotate[((15 - x - 1) * 15) + y] = buffer[(y * 15) + x];
-      }
-    }
-    rot = createImage(new MemoryImageSource(15, 15, rotate, 0, 15));
-
-    return rot;
+  public ImageManager getImageManager() {
+    return imageManager;
   }
 
   public void addMsg(String message) {

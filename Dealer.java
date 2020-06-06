@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 
@@ -33,12 +34,6 @@ class Dealer {
   BufferedReader in[] = new BufferedReader[3];
 
   SHinterface sh;
-
-  Image cardspic;
-  Image back;
-  Image backSW;
-  Image pointer[];
-  Image burntPic;
 
   Graphics g;
 
@@ -76,33 +71,24 @@ class Dealer {
 
   Dealer(
       SHinterface sh,
-      Image cardspic,
       Graphics g,
       Hand hand,
-      Image back,
-      Image backSW,
       boolean fastgame,
       boolean seven,
       boolean nine,
       boolean swap,
-      Image[] pointer,
-      Image burntPic,
       Score score) {
     this.sh = sh;
-    this.cardspic = cardspic;
     this.g = g;
-    this.back = back;
-    this.backSW = backSW;
     this.fastgame = fastgame;
     this.seven = seven;
     this.nine = nine;
-    this.pointer = pointer;
     this.swap = swap;
-    this.burntPic = burntPic;
     this.score = score;
 
     score.imDealer(this);
 
+    BufferedImage back = sh.getImageManager().getCardBack();
     hands[0] = new Hand(sh, back, g);
     hands[1] = new Hand(sh, back, g);
     hands[2] = new Hand(sh, back, g);
@@ -209,7 +195,7 @@ class Dealer {
   private void deal() {
     // adding card to deck
     for (int n = 0; n < 52; n++) {
-      Card card = new Card(n + 1, cardspic, sh, g);
+      Card card = new Card(n + 1, sh, g);
       deck[n] = card;
     }
     shuffle(); // shuffling card deck
@@ -391,6 +377,10 @@ class Dealer {
   }
 
   public void displayTable() {
+    ImageManager im = sh.getImageManager();
+    BufferedImage back = im.getCardBack();
+    BufferedImage backSW = im.getCardBackSideways();
+
     g.setColor(Color.black);
     g.fillRect(0, 0, 450, 550);
     g.setColor(Color.white);
@@ -405,7 +395,7 @@ class Dealer {
     g.drawRoundRect(5, 360, 90, 40, 15, 15);
     g.drawString("Name: " + otherNames[0], 10, 375);
     g.drawString("Cards: " + (hands[0].length() - 1), 10, 395);
-    g.drawImage(pointer[1], 68, 380, sh);
+    g.drawImage(im.getPointer(1), 68, 380, sh);
     if (hands[0].getFaceUp(0) != null) hands[0].getFaceUp(0).drawSideWays(tableposition[0][0]);
     else if (hands[0].getFaceDown(0) != null)
       g.drawImage(backSW, (int) tableposition[0][0].getX(), (int) tableposition[0][0].getY(), sh);
@@ -419,7 +409,7 @@ class Dealer {
     g.drawRoundRect(5, 5, 90, 40, 15, 15);
     g.drawString("Name: " + otherNames[1], 10, 20);
     g.drawString("Cards: " + (hands[1].length() - 1), 10, 40);
-    g.drawImage(pointer[2], 70, 25, sh);
+    g.drawImage(im.getPointer(2), 70, 25, sh);
 
     if (hands[1].getFaceUp(0) != null) hands[1].getFaceUp(0).drawCard(tableposition[1][0]);
     else if (hands[1].getFaceDown(0) != null)
@@ -434,7 +424,7 @@ class Dealer {
     g.drawRoundRect(355, 360, 90, 40, 15, 15);
     g.drawString("Name: " + otherNames[2], 360, 375); // 365
     g.drawString("Cards: " + (hands[2].length() - 1), 360, 395); // 365
-    g.drawImage(pointer[1], 423, 380, sh);
+    g.drawImage(im.getPointer(1), 423, 380, sh);
     if (hands[2].getFaceUp(0) != null) hands[2].getFaceUp(0).drawSideWays(tableposition[2][0]);
     else if (hands[2].getFaceDown(0) != null)
       g.drawImage(backSW, (int) tableposition[2][0].getX(), (int) tableposition[2][0].getY(), sh);
@@ -485,11 +475,11 @@ class Dealer {
         pile[0].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 60);
       }
     } else if (burnt) {
-      g.drawImage(burntPic, 130, 190, sh);
+      g.drawImage(im.getBurnt(), 130, 190, sh);
       burnt = false;
     }
     g.drawImage(
-        pointer[whosturn],
+        im.getPointer(whosturn),
         (int) pointerpoints[whosturn].getX(),
         (int) pointerpoints[whosturn].getY(),
         sh);
@@ -1413,7 +1403,7 @@ class Dealer {
           } catch (NumberFormatException b) {
             sh.addMsg("processSwap - error - variable to Int error: " + b);
           }
-          Card card = new Card(cardno, cardspic, sh, g);
+          Card card = new Card(cardno, sh, g);
           if (r == 0) inhand[n] = card;
           else ontable[n] = card;
         }

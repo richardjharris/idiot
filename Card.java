@@ -16,26 +16,22 @@ public class Card {
   int cardNumber;
 
   BufferedImage cardPic;
-  Image cardSideWays;
-
-  int picX;
-  int picY;
+  BufferedImage cardSideWays;
 
   // for drawing card
   SHinterface sh;
   Graphics g;
 
-  public Card(int cardNumber, Image cardspic, SHinterface sh, Graphics g) {
+  public Card(int cardNumber, SHinterface sh, Graphics g) {
     this.cardNumber = cardNumber;
     this.sh = sh;
     this.g = g;
 
-    cardPic = new BufferedImage(71, 96, Transparency.BITMASK);
-    Graphics tempg = cardPic.getGraphics();
+    cardSuit = getCardSuit(cardNumber);
+    cardValue = getCardValue(cardNumber, cardSuit);
 
-    cardSideWays = new BufferedImage(96, 71, Transparency.BITMASK);
-
-    getCardDetails(cardspic, tempg);
+    cardPic = sh.getImageManager().getCardFront(cardSuit, cardValue);
+    cardSideWays = sh.getImageManager().getCardFrontSideways(cardSuit, cardValue);
   }
 
   public void drawCard(Point p) {
@@ -84,37 +80,6 @@ public class Card {
    *
    *-------------------------------*/
 
-  private void getCardDetails(Image cardpic, Graphics tempg) {
-    int cardWidth = 73;
-    int cardHeight = 99;
-
-    // Finding Suit
-    if (cardNumber < 14) cardSuit = 1;
-    else if (cardNumber >= 14 && cardNumber < 27) cardSuit = 2;
-    else if (cardNumber >= 27 && cardNumber < 40) cardSuit = 3;
-    else if (cardNumber >= 40 && cardNumber < 53) cardSuit = 4;
-
-    // Finding Value
-    if (cardSuit == 1) cardValue = cardNumber + 1;
-    else if (cardSuit == 2) cardValue = cardNumber - 12;
-    else if (cardSuit == 3) cardValue = cardNumber - 25;
-    else if (cardSuit == 4) cardValue = cardNumber - 38;
-
-    // seperating card image from other card images
-    tempg.drawImage(cardpic, -(cardValue - 2) * cardWidth, -(cardSuit - 1) * cardHeight, sh);
-
-    // rotating card image to create sideways card image
-    Graphics tempg2 = cardSideWays.getGraphics();
-    Graphics2D g2d = (Graphics2D) tempg2;
-    AffineTransform origXform = g2d.getTransform();
-    AffineTransform newXform = (AffineTransform) (origXform.clone());
-    newXform.rotate(Math.toRadians(-90), 50, 50);
-    g2d.setTransform(newXform);
-    // draw image
-    g2d.drawImage(cardPic, 29, 0, sh);
-    g2d.setTransform(origXform);
-  }
-
   public String getStringValue() {
     switch (cardValue) {
       case 2:
@@ -148,21 +113,31 @@ public class Card {
     }
   }
 
-  public static String getCardStringValue(int cardNumber) {
+  public static int getCardSuit(int cardNumber) {
     int cardSuit = 0;
-    int cardValue = 0;
 
     // Finding Suit
     if (cardNumber < 14) cardSuit = 1;
     else if (cardNumber >= 14 && cardNumber < 27) cardSuit = 2;
     else if (cardNumber >= 27 && cardNumber < 40) cardSuit = 3;
     else if (cardNumber >= 40 && cardNumber < 53) cardSuit = 4;
+    return cardSuit;
+  }
+
+  public static int getCardValue(int cardNumber, int cardSuit) {
+    int cardValue = 0;
 
     // Finding Value
     if (cardSuit == 1) cardValue = cardNumber + 1;
     else if (cardSuit == 2) cardValue = cardNumber - 12;
     else if (cardSuit == 3) cardValue = cardNumber - 25;
     else if (cardSuit == 4) cardValue = cardNumber - 38;
+    return cardValue;
+  }
+
+  public static String getCardStringValue(int cardNumber) {
+    int cardSuit = getCardSuit(cardNumber);
+    int cardValue = getCardValue(cardNumber, cardSuit);
 
     switch (cardValue) {
       case 2:

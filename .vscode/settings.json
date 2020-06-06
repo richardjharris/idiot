@@ -8,5 +8,9 @@
     },
     "java.format.settings.url": "eclipse-formatter.xml",
     "editor.tabSize": 2,
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "java.completion.filteredTypes": [
+      "java.awt.List",
+      "com.sun.*"
+    ]
 }

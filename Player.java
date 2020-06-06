@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 
@@ -32,12 +33,6 @@ class Player {
 
   SHinterface sh;
 
-  Image cardspic;
-  Image back;
-  Image backSW;
-  Image burntPic;
-  Image pointer[];
-
   Hand hand;
 
   Graphics g;
@@ -70,22 +65,12 @@ class Player {
 
   Player(
       SHinterface sh,
-      Image cardspic,
       Graphics g,
       Hand hand,
-      Image back,
-      Image backSW,
-      Image burntPic,
-      Image[] pointer,
       Score score) {
     this.sh = sh;
-    this.cardspic = cardspic;
     this.g = g;
     this.hand = hand;
-    this.back = back;
-    this.backSW = backSW;
-    this.burntPic = burntPic;
-    this.pointer = pointer;
     this.score = score;
 
     tableposition[0][0] = new Point(0, 103);
@@ -209,7 +194,12 @@ class Player {
     }
   }
 
+  // TODO this looks like a copy of Dealer's method.
   public void displayTable() {
+    ImageManager im = sh.getImageManager();
+    BufferedImage back = im.getCardBack();
+    BufferedImage backSW = im.getCardBackSideways();
+
     g.setColor(Color.black);
     g.fillRect(0, 0, 450, 550);
     g.setColor(Color.white);
@@ -224,7 +214,7 @@ class Player {
     g.drawRoundRect(5, 360, 90, 40, 15, 15);
     g.drawString("Name: " + othernames[0], 10, 375);
     g.drawString("Cards: " + cardcount[0], 10, 395);
-    g.drawImage(pointer[1], 68, 380, sh);
+    g.drawImage(im.getPointer(1), 68, 380, sh);
     if (faceup[0][0] != null) faceup[0][0].drawSideWays(tableposition[0][0]);
     else if (carddowncount[0] >= 3)
       g.drawImage(backSW, (int) tableposition[0][0].getX(), (int) tableposition[0][0].getY(), sh);
@@ -238,7 +228,8 @@ class Player {
     g.drawRoundRect(5, 5, 90, 40, 15, 15);
     g.drawString("Name: " + othernames[1], 10, 20);
     g.drawString("Cards: " + cardcount[1], 10, 40);
-    g.drawImage(pointer[2], 70, 25, sh);
+    g.drawImage(im.getPointer(2), 70, 25, sh);
+
     if (faceup[1][0] != null) faceup[1][0].drawCard(tableposition[1][0]);
     else if (carddowncount[1] >= 3)
       g.drawImage(back, (int) tableposition[1][0].getX(), (int) tableposition[1][0].getY(), sh);
@@ -252,7 +243,7 @@ class Player {
     g.drawRoundRect(355, 360, 90, 40, 15, 15);
     g.drawString("Name: " + othernames[2], 360, 375);
     g.drawString("Cards: " + cardcount[2], 360, 395);
-    g.drawImage(pointer[1], 423, 380, sh);
+    g.drawImage(im.getPointer(1), 423, 380, sh);
     if (faceup[2][0] != null) faceup[2][0].drawSideWays(tableposition[2][0]);
     else if (carddowncount[2] >= 3)
       g.drawImage(backSW, (int) tableposition[2][0].getX(), (int) tableposition[2][0].getY(), sh);
@@ -304,11 +295,11 @@ class Player {
         pile[0].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 60);
       }
     } else if (burnt) {
-      g.drawImage(burntPic, 130, 190, sh);
+      g.drawImage(im.getBurnt(), 130, 190, sh);
       burnt = false;
     }
     g.drawImage(
-        pointer[whosturn],
+        im.getPointer(whosturn),
         (int) pointerpoints[whosturn].getX(),
         (int) pointerpoints[whosturn].getY(),
         sh);
@@ -851,7 +842,7 @@ class Player {
           burn = faceupmulti(otherplayermsg, varlength3, playernumber);
         } else {
           try {
-            Card card = new Card(Integer.parseInt(cardno2), cardspic, sh, g);
+            Card card = new Card(Integer.parseInt(cardno2), sh, g);
             // adding card to pile
             for (int n = 51; n > 0; n--) pile[n] = pile[n - 1];
             pile[0] = card;
@@ -908,7 +899,7 @@ class Player {
                   + " and had to picked up the pile");
         } else {
           try {
-            Card card = new Card(Integer.parseInt(cardno2), cardspic, sh, g);
+            Card card = new Card(Integer.parseInt(cardno2), sh, g);
             for (int n = 51; n > 0; n--) pile[n] = pile[n - 1];
             pile[0] = card;
             // burning pile if a 10 is played
@@ -956,7 +947,7 @@ class Player {
           String cardnoString = otherplayermsg.substring(varlength2 + 1, varlength3);
           // converting string to int for processing
           try {
-            Card card = new Card(Integer.parseInt(cardnoString), cardspic, sh, g);
+            Card card = new Card(Integer.parseInt(cardnoString), sh, g);
             addcardtopile(card);
           } catch (NumberFormatException b) {
             sh.addMsg("processTurn - multi - variable to Int error: " + b);
@@ -979,7 +970,7 @@ class Player {
       } else {
         // adding card to pile
         try {
-          Card card = new Card(Integer.parseInt(cardno), cardspic, sh, g);
+          Card card = new Card(Integer.parseInt(cardno), sh, g);
           for (int n = 51; n > 0; n--) pile[n] = pile[n - 1];
           pile[0] = card;
           // burning pile if a 10 is played
@@ -1034,7 +1025,7 @@ class Player {
         String cardnoString = otherplayermsg.substring(varlength2 + 1, varlength3);
         // converting string to int for processing
         try {
-          Card card = new Card(Integer.parseInt(cardnoString), cardspic, sh, g);
+          Card card = new Card(Integer.parseInt(cardnoString), sh, g);
           addcardtopile(card);
 
           for (int i = 0; i < 3; i++)
@@ -1179,7 +1170,7 @@ class Player {
 
       // Adding card to hand
       try {
-        Card card = new Card(Integer.parseInt(variable), cardspic, sh, g);
+        Card card = new Card(Integer.parseInt(variable), sh, g);
         hand.addCard(card);
       } catch (NumberFormatException b) {
         sh.addMsg("Deal - variable to Int error: " + b);
@@ -1202,7 +1193,7 @@ class Player {
 
       // Adding card to deck
       try {
-        Card card = new Card(Integer.parseInt(variable), cardspic, sh, g);
+        Card card = new Card(Integer.parseInt(variable), sh, g);
         hand.deal(card);
       } catch (NumberFormatException b) {
         sh.addMsg("Deal - variable to Int error: " + b);
@@ -1237,7 +1228,7 @@ class Player {
         carddowncount[n] = 3;
         try {
           for (int i = 0; i < 3; i++) {
-            Card card = new Card(Integer.parseInt(variables[4 * n + 1 + i]), cardspic, sh, g);
+            Card card = new Card(Integer.parseInt(variables[4 * n + 1 + i]), sh, g);
             faceup[n][i] = card;
           }
         } catch (NumberFormatException b) {
