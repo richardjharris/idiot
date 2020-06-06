@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 import javax.swing.*;
+import java.io.IOException;
 
 /*-------------------------------
  This is a Shithead(card game) Program
@@ -52,9 +53,6 @@ class SHinterface extends JFrame
   int mouseX, mouseY;
 
   JMenuBar menuBar;
-  JMenu menu;
-  JMenuItem menuItem;
-  JRadioButtonMenuItem rbMenuItem;
 
   // Graphics buffer stuff
   Graphics g;
@@ -97,7 +95,7 @@ class SHinterface extends JFrame
   SHinterface() {
     try {
       imageManager = new ImageManager(this);
-    } catch (Exception e) {
+    } catch (InterruptedException | IOException e) {
       msg.setText("Load Error " + e);
     }
 
@@ -142,91 +140,8 @@ class SHinterface extends JFrame
     requestFocus();
 
     // Construction Menu
+    menuBar = buildMenuBar();
 
-    menuBar = new JMenuBar();
-
-    // Build the first menu.
-    menu = new JMenu("File");
-    menu.setMnemonic(KeyEvent.VK_F);
-    menu.getAccessibleContext().setAccessibleDescription("Game Options Can Be Found Here");
-    menuBar.add(menu);
-
-    // File group of JMenuItems
-    menuItem = new JMenuItem("1 Player", KeyEvent.VK_P);
-    menuItem.getAccessibleContext().setAccessibleDescription("Start Single Player Game");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    menuItem = new JMenuItem("Multi Player Server", KeyEvent.VK_S);
-    menuItem
-        .getAccessibleContext()
-        .setAccessibleDescription("Be the server for a Multi player game");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    menuItem = new JMenuItem("Multi Player Client", KeyEvent.VK_C);
-    menuItem
-        .getAccessibleContext()
-        .setAccessibleDescription("Connect to another Multi player Game");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    menuItem = new JMenuItem("Close Connections", KeyEvent.VK_L);
-    menuItem.getAccessibleContext().setAccessibleDescription("Close Game Connection");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    menuItem = new JMenuItem("Scoreboard", KeyEvent.VK_B);
-    menuItem.getAccessibleContext().setAccessibleDescription("Veiw Scoreboard");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    menuItem = new JMenuItem("Quit", KeyEvent.VK_Q);
-    menuItem.getAccessibleContext().setAccessibleDescription("Quit Game");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    // Build second menu in the menu bar.
-    menu = new JMenu("Options");
-    menu.getAccessibleContext().setAccessibleDescription("Game Options");
-    menuBar.add(menu);
-
-    menuItem = new JMenuItem("Redeal", KeyEvent.VK_R);
-    menuItem.getAccessibleContext().setAccessibleDescription("Redeal the deck");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    menuItem = new JMenuItem("Start Game", KeyEvent.VK_S);
-    menuItem.getAccessibleContext().setAccessibleDescription("Start game now");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    menuItem = new JMenuItem("AI Speed", KeyEvent.VK_A);
-    menuItem
-        .getAccessibleContext()
-        .setAccessibleDescription("Time it takes for GameAI to make a move");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    // Build 3rd menu in the menu bar.
-    menu = new JMenu("About");
-    menu.getAccessibleContext().setAccessibleDescription("About the Game");
-    menuBar.add(menu);
-
-    menuItem = new JMenuItem("Rules", KeyEvent.VK_R);
-    menuItem.getAccessibleContext().setAccessibleDescription("Who to play");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    menuItem = new JMenuItem("Home Page", KeyEvent.VK_H);
-    menuItem.getAccessibleContext().setAccessibleDescription("View Home Page");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
-
-    menuItem = new JMenuItem("About", KeyEvent.VK_A);
-    menuItem.getAccessibleContext().setAccessibleDescription("About the Game");
-    menuItem.addActionListener(this);
-    menu.add(menuItem);
 
     addWindowListener(this);
 
@@ -575,4 +490,94 @@ class SHinterface extends JFrame
   public void windowActivated(WindowEvent e) {}
 
   public void windowDeactivated(WindowEvent e) {}
+
+  private JMenuBar buildMenuBar() {
+
+    JMenuBar menuBar = new JMenuBar();
+
+    // Build the first menu.
+    JMenu menu = new JMenu("File");
+    menu.setMnemonic(KeyEvent.VK_F);
+    menu.getAccessibleContext().setAccessibleDescription("Game Options Can Be Found Here");
+    menuBar.add(menu);
+
+    // File group of JMenuItems
+    JMenuItem menuItem = new JMenuItem("1 Player", KeyEvent.VK_P);
+    menuItem.getAccessibleContext().setAccessibleDescription("Start Single Player Game");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    menuItem = new JMenuItem("Multi Player Server", KeyEvent.VK_S);
+    menuItem
+        .getAccessibleContext()
+        .setAccessibleDescription("Be the server for a Multi player game");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    menuItem = new JMenuItem("Multi Player Client", KeyEvent.VK_C);
+    menuItem
+        .getAccessibleContext()
+        .setAccessibleDescription("Connect to another Multi player Game");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    menuItem = new JMenuItem("Close Connections", KeyEvent.VK_L);
+    menuItem.getAccessibleContext().setAccessibleDescription("Close Game Connection");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    menuItem = new JMenuItem("Scoreboard", KeyEvent.VK_B);
+    menuItem.getAccessibleContext().setAccessibleDescription("Veiw Scoreboard");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    menuItem = new JMenuItem("Quit", KeyEvent.VK_Q);
+    menuItem.getAccessibleContext().setAccessibleDescription("Quit Game");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    // Build second menu in the menu bar.
+    menu = new JMenu("Options");
+    menu.getAccessibleContext().setAccessibleDescription("Game Options");
+    menuBar.add(menu);
+
+    menuItem = new JMenuItem("Redeal", KeyEvent.VK_R);
+    menuItem.getAccessibleContext().setAccessibleDescription("Redeal the deck");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    menuItem = new JMenuItem("Start Game", KeyEvent.VK_S);
+    menuItem.getAccessibleContext().setAccessibleDescription("Start game now");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    menuItem = new JMenuItem("AI Speed", KeyEvent.VK_A);
+    menuItem
+        .getAccessibleContext()
+        .setAccessibleDescription("Time it takes for GameAI to make a move");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    // Build 3rd menu in the menu bar.
+    menu = new JMenu("About");
+    menu.getAccessibleContext().setAccessibleDescription("About the Game");
+    menuBar.add(menu);
+
+    menuItem = new JMenuItem("Rules", KeyEvent.VK_R);
+    menuItem.getAccessibleContext().setAccessibleDescription("Who to play");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    menuItem = new JMenuItem("Home Page", KeyEvent.VK_H);
+    menuItem.getAccessibleContext().setAccessibleDescription("View Home Page");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    menuItem = new JMenuItem("About", KeyEvent.VK_A);
+    menuItem.getAccessibleContext().setAccessibleDescription("About the Game");
+    menuItem.addActionListener(this);
+    menu.add(menuItem);
+
+    return menuBar;
+  }
 }
