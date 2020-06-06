@@ -382,20 +382,20 @@ class Dealer {
     BufferedImage backSW = im.getCardBackSideways();
 
     g.setColor(Color.black);
-    g.fillRect(0, 0, 450, 550);
+    g.fillRect(0, 0, 675, 825);
     g.setColor(Color.white);
-    g.drawLine(0, 450, 450, 450);
+    g.drawLine(0, 675, 675, 675);
     g.setColor(Color.red);
-    g.drawRoundRect(355, 5, 90, 40, 15, 15);
+    g.drawRoundRect(533, 7, 135, 60, 23, 23);
     g.setColor(Color.white);
-    g.drawString("Deck: " + decklength(), 365, 20);
-    g.drawString("Pile: " + pilelength(), 365, 40);
+    g.drawString("Deck: " + decklength(), 548, 30);
+    g.drawString("Pile: " + pilelength(), 548, 60);
     hands[3].showHand();
 
-    g.drawRoundRect(5, 360, 90, 40, 15, 15);
-    g.drawString("Name: " + otherNames[0], 10, 375);
-    g.drawString("Cards: " + (hands[0].length() - 1), 10, 395);
-    g.drawImage(im.getPointer(1), 68, 380, sh);
+    g.drawRoundRect(8, 540, 135, 60, 23, 23);
+    g.drawString("Name: " + otherNames[0], 15, 563);
+    g.drawString("Cards: " + (hands[0].length() - 1), 15, 593);
+    g.drawImage(im.getPointer(1), 102, 570, sh);
     if (hands[0].getFaceUp(0) != null) hands[0].getFaceUp(0).drawSideWays(tableposition[0][0]);
     else if (hands[0].getFaceDown(0) != null)
       g.drawImage(backSW, (int) tableposition[0][0].getX(), (int) tableposition[0][0].getY(), sh);
@@ -406,10 +406,10 @@ class Dealer {
     else if (hands[0].getFaceDown(2) != null)
       g.drawImage(backSW, (int) tableposition[0][2].getX(), (int) tableposition[0][2].getY(), sh);
 
-    g.drawRoundRect(5, 5, 90, 40, 15, 15);
-    g.drawString("Name: " + otherNames[1], 10, 20);
-    g.drawString("Cards: " + (hands[1].length() - 1), 10, 40);
-    g.drawImage(im.getPointer(2), 70, 25, sh);
+    g.drawRoundRect(8, 8, 135, 60, 23, 23);
+    g.drawString("Name: " + otherNames[1], 15, 30);
+    g.drawString("Cards: " + (hands[1].length() - 1), 15, 60);
+    g.drawImage(im.getPointer(2), 105, 38, sh);
 
     if (hands[1].getFaceUp(0) != null) hands[1].getFaceUp(0).drawCard(tableposition[1][0]);
     else if (hands[1].getFaceDown(0) != null)
@@ -421,10 +421,10 @@ class Dealer {
     else if (hands[1].getFaceDown(2) != null)
       g.drawImage(back, (int) tableposition[1][2].getX(), (int) tableposition[1][2].getY(), sh);
 
-    g.drawRoundRect(355, 360, 90, 40, 15, 15);
-    g.drawString("Name: " + otherNames[2], 360, 375); // 365
-    g.drawString("Cards: " + (hands[2].length() - 1), 360, 395); // 365
-    g.drawImage(im.getPointer(1), 423, 380, sh);
+    g.drawRoundRect(533, 540, 130, 60, 23, 23);
+    g.drawString("Name: " + otherNames[2], 540, 563); // 365
+    g.drawString("Cards: " + (hands[2].length() - 1), 540, 593); // 365
+    g.drawImage(im.getPointer(1), 635, 570, sh);
     if (hands[2].getFaceUp(0) != null) hands[2].getFaceUp(0).drawSideWays(tableposition[2][0]);
     else if (hands[2].getFaceDown(0) != null)
       g.drawImage(backSW, (int) tableposition[2][0].getX(), (int) tableposition[2][0].getY(), sh);
@@ -475,7 +475,8 @@ class Dealer {
         pile[0].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 60);
       }
     } else if (burnt) {
-      g.drawImage(im.getBurnt(), 130, 190, sh);
+      // TODO scale up image by 1.5x
+      g.drawImage(im.getBurnt(), 195, 285, sh);
       burnt = false;
     }
     g.drawImage(

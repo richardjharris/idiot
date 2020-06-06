@@ -21,8 +21,8 @@ public class ImageManager {
   private BufferedImage pointer[] = new BufferedImage[4];
   private BufferedImage cardBackSideways;
 
-  private static final int cardWidth = 73;
-  private static final int cardHeight = 99;
+  private static final int cardWidth = 101;
+  private static final int cardHeight = 149;
 
   // These are in the same numbered order as the other SH code.
   // suits: 1-4

@@ -93,11 +93,11 @@ class SHinterface extends JFrame
       msg.setText("Load Error " + e);
     }
 
-    offscreen = new BufferedImage(450, 550, BufferedImage.TYPE_3BYTE_BGR);
+    offscreen = new BufferedImage(675, 825, BufferedImage.TYPE_3BYTE_BGR);
     g = offscreen.getGraphics();
-    g.drawImage(imageManager.getTitle(), -40, 120, this);
+    g.drawImage(imageManager.getTitle(), 75, 250, this);
     g.setColor(Color.white);
-    g.drawLine(0, 450, 450, 450);
+    g.drawLine(0, 675, 675, 675);
 
     hand = new Hand(this, imageManager.getCardBack(), g);
 
