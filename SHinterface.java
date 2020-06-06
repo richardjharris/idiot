@@ -155,7 +155,7 @@ class SHinterface extends JFrame
 
     scrollPane =
         new JScrollPane(
-            msg, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            msg, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
     // Testing if images loaded correctly -  doesnt need to do this with jar file
     // File f = new File("cards.gif");
@@ -166,17 +166,34 @@ class SHinterface extends JFrame
     GridBagLayout gridbag = new GridBagLayout();
     GridBagConstraints c = new GridBagConstraints();
     panel.setLayout(gridbag);
-    c.anchor = GridBagConstraints.WEST;
-    c.fill = GridBagConstraints.BOTH;
     panel.setBackground(Color.white);
     getContentPane().add(panel);
 
+    // Menu bar spans entire length
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 2;
     panel.add(menuBar, c);
+
+    // Game occupies middle area
+    c.fill = GridBagConstraints.BOTH;
+    c.gridx = 0;
     c.gridy = 1;
+    c.gridwidth = 1;
+    c.gridheight = 2;
     panel.add(image, c);
-    c.gridy = 2;
+
+    // Chat goes to the right of game
+    c.fill = GridBagConstraints.VERTICAL;
+    c.gridx = 1;
+    c.gridheight = 1;
+    c.weighty = 1.0;
     panel.add(scrollPane, c);
-    c.gridy = 3;
+
+    c.fill = GridBagConstraints.BOTH;
+    c.gridy = 2;
+    c.weighty = 0.0;
     panel.add(input, c);
 
     addMsg("Detected Screen Size: " + screenSize.width + "x" + screenSize.height);
