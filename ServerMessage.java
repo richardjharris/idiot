@@ -103,7 +103,7 @@ class ServerMessage {
           }
         }
 
-      } while (listen == true && socketOK == true);
+      } while (listen && socketOK);
       sh.addMsg("Player " + name + " Has Disconnected");
       sendMsg("Player " + name + " Has Disconnected");
     }
@@ -169,7 +169,7 @@ class ServerMessage {
           new WaitforMsg(socketCount, name);
           socketCount++;
         }
-      } while (listen == true && socketCount < 3 && endlook != true);
+      } while (listen && socketCount < 3 && !endlook);
 
       if (listenSocket != null)
         try {
