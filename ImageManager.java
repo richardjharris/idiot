@@ -3,6 +3,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
@@ -10,8 +11,8 @@ import javax.imageio.ImageIO;
 /** Holds all images. */
 // TODO cache resized images
 public class ImageManager {
-  private static final String cardsPath = "cards/";
-  private static final String cardBackFilename = cardsPath + "blue_back.png";
+  private static final String cardsPath = "cards2/";
+  private static final String cardBackFilename =  "back2.png";
   private static final String titleFilename = "SHtitle.jpg";
   private static final String pointerFilename = "pointer.gif";
   private static final String burntFilename = "burnt.jpg";
@@ -46,13 +47,17 @@ public class ImageManager {
 
     for (String suit : suits) {
       for (String rank : ranks) {
-        files.add(cardsPath + rank + suit + ".png");
+        files.add(cardsPath + "500px-" + rank + suit + ".svg.png");
       }
     }
 
     images = new HashMap<String, BufferedImage>();
     for (String file : files) {
-      BufferedImage image = ImageIO.read(this.getClass().getResource(file));
+      URL url = this.getClass().getResource(file);
+      if (url == null) {
+        throw new Error("File " + file + " is missing or unreadable!");
+      }
+      BufferedImage image = ImageIO.read(url);
       images.put(file, image);
     }
 
@@ -87,7 +92,7 @@ public class ImageManager {
     // SH code starts at 1 (Hearts), 2 (Spades), 3 (Diamonds), 4 (Clubs)
     String suitString = suits[suit - 1];
 
-    return getImage(cardsPath + rankString + suitString + ".png");
+    return getImage(cardsPath + "500px-" + rankString + suitString + ".svg.png");
   }
 
   BufferedImage getCardFront(int suit, int rank) {
@@ -117,8 +122,10 @@ public class ImageManager {
   static BufferedImage rotateClockwise90(BufferedImage src) {
     int width = src.getWidth();
     int height = src.getHeight();
+    // Color card images get given type = 0, which would cause an exception
+    int type = src.getType() == 0 ? src.getType() : 5;
 
-    BufferedImage dest = new BufferedImage(height, width, src.getType());
+    BufferedImage dest = new BufferedImage(height, width, type);
 
     Graphics2D graphics2D = dest.createGraphics();
     graphics2D.translate((height - width) / 2, (height - width) / 2);
@@ -130,7 +137,8 @@ public class ImageManager {
   }
 
   static BufferedImage resize(BufferedImage src, int newWidth, int newHeight) {
-    BufferedImage dest = new BufferedImage(newWidth, newHeight, src.getType());
+    int type = src.getType() == 0 ? src.getType() : 5;
+    BufferedImage dest = new BufferedImage(newWidth, newHeight, type);
     progressiveResize(src, dest);
     return dest;
   }
@@ -138,7 +146,7 @@ public class ImageManager {
   static private Graphics2D createGraphics(BufferedImage img) {
     Graphics2D g = img.createGraphics();
     g.setRenderingHint(
-      RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+      RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		return g;  
   }
