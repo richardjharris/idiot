@@ -91,6 +91,7 @@ class SHinterface extends JFrame
   Point centre1;
 
   ImageManager imageManager;
+  SoundManager soundManager;
 
   int scale(int number) {
     return (int) (number * scaleFactor);
@@ -207,6 +208,8 @@ class SHinterface extends JFrame
     panel.add(input, c);
 
     score = new Score(this);
+
+    soundManager = new SoundManager();
   }
 
   public void actionPerformed(ActionEvent event) {

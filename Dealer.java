@@ -934,6 +934,7 @@ class Dealer {
     if (seven == true && pile[top].getValue() == 7) {
       if (card.getValue() >= 7) {
         sh.addMsg("You Must Play Less Than a Seven");
+        sh.soundManager.playTwang();
         return false;
       } else {
         cardAccepted(card, command);
