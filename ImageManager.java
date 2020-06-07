@@ -27,12 +27,6 @@ public class ImageManager {
   private int cardWidth, cardHeight;
   private double scaleFactor;
 
-  // These are in the same numbered order as the other SH code.
-  // suits: 1-4
-  private String[] suits = {"H", "S", "D", "C"};
-  // ranks: 2-10, 11(J), 12(Q), 13(K), 14(A)
-  private String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-
   ImageManager(SHinterface sh) throws IOException {
     cardWidth = sh.scale(baseCardWidth);
     cardHeight = sh.scale(baseCardHeight);
@@ -45,8 +39,8 @@ public class ImageManager {
     files.add(pointerFilename);
     files.add(burntFilename);
 
-    for (String suit : suits) {
-      for (String rank : ranks) {
+    for (String suit : Card.suits) {
+      for (String rank : Card.ranks) {
         files.add(cardsPath + "500px-" + rank + suit + ".svg.png");
       }
     }
@@ -88,9 +82,9 @@ public class ImageManager {
 
   private BufferedImage getRawCardFront(int suit, int rank) {
     // SH code starts at 2 and ends at 14 (Ace)
-    String rankString = ranks[rank - 2];
+    String rankString = Card.ranks[rank - 2];
     // SH code starts at 1 (Hearts), 2 (Spades), 3 (Diamonds), 4 (Clubs)
-    String suitString = suits[suit - 1];
+    String suitString = Card.suits[suit - 1];
 
     return getImage(cardsPath + "500px-" + rankString + suitString + ".svg.png");
   }

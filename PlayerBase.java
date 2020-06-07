@@ -118,6 +118,13 @@ abstract public class PlayerBase {
     System.out.println("Adding " + card.toString() + " to the pile");
     for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
     pile[0] = card;
+
+    String pileString = "";
+    for (int i = 0; i <= 52; i++) {
+      if (pile[i] == null) break;
+      pileString += " " + pile[i].toShortString();
+    }
+    System.out.println("Pile is now: " + pileString);
   }
 
   private void initTablePositions() {
@@ -148,13 +155,6 @@ abstract public class PlayerBase {
     ownHand().showHand();
 
     drawOtherPlayerCards();
-
-    String pileStr = "";
-    for (int i = 0; i < 52; i++) {
-      if (pile[i] == null) break;
-      pileStr += Card.getCardStringValue(pile[i].cardNumber);
-    }
-    System.out.println("Pile: " + pileStr);
 
     if (!pileIsEmpty()) {
       drawPile();

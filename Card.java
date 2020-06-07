@@ -9,22 +9,36 @@ import java.awt.image.*;
  *     <p>Website: http://home.pacific.net.au/~cavenagh/SH/ Email: cavenaghweb@hotmail.com
  */
 public class Card {
-  // Reference at bottom of class
+  // Suit numbered 1-4, in the same order as `suits` below.
   int cardSuit;
+  // Rank numbered 2-14, in the same order as `ranks` below (11=J, 12=Q, 13=K, 14=A)
   int cardValue;
+
+  // Original card number from 0-51.
   int cardNumber;
 
+  // TODO move to ImageManager.
   BufferedImage cardPic;
   BufferedImage cardSideWays;
 
-  // for drawing card
+  // TODO move routines to SHinterface.
   SHinterface sh;
   Graphics g;
+
+  public static final String[] suits = {"H", "S", "D", "C"};
+  public static final String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+
+  public static final String[] suitsLong = {"Hearts", "Spades", "Diamonds", "Clubs"};
+  public static final String[] ranksLong = {"Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace"};
 
   public Card(int cardNumber, SHinterface sh, Graphics g) {
     this.cardNumber = cardNumber;
     this.sh = sh;
     this.g = g;
+
+    if (cardNumber < 1 || cardNumber > 52) {
+      throw new Error("Invalid card number: " + cardNumber);
+    }
 
     cardSuit = getCardSuit(cardNumber);
     cardValue = getCardValue(cardNumber, cardSuit);
@@ -71,74 +85,30 @@ public class Card {
     return cardNumber;
   }
 
-  /*--------------------------------
-   *   Card Code Index
-   *
-   *   SUIT:
-   *   1 = hearts
-   *   2 = spades
-   *   3 = diamonds
-   *   4 = clubs
-   *
-   *   VALUE:
-   *   2 - 10 = as numbers
-   *   11 = jack
-   *   12 = queen
-   *   13 = king
-   *   14 = ace
-   *
-   *-------------------------------*/
-
   public String getStringSuit() {
-    switch (cardSuit) {
-      case 1:
-        return "Hearts";
-      case 2:
-        return "Spades";
-      case 3:
-        return "Diamonds";
-      case 4:
-        return "Clubs";
-      default:
-        return "Unknown";
-    }
+    return suitsLong[cardSuit - 1];
   }
 
   public String getStringValue() {
-    switch (cardValue) {
-      case 2:
-        return "Two";
-      case 3:
-        return "Three";
-      case 4:
-        return "Four";
-      case 5:
-        return "Five";
-      case 6:
-        return "Six";
-      case 7:
-        return "Seven";
-      case 8:
-        return "Eight";
-      case 9:
-        return "Nine";
-      case 10:
-        return "Ten";
-      case 11:
-        return "Jack";
-      case 12:
-        return "Queen";
-      case 13:
-        return "King";
-      case 14:
-        return "Ace";
-      default:
-        return "Unknown";
-    }
+    return ranksLong[cardValue - 2];
   }
 
+  public String getShortStringSuit() {
+    return suits[cardSuit - 1];
+  }
+
+  public String getShortStringValue() {
+    return ranks[cardValue - 2];
+  }
+
+  // Long name of card, e.g. Two of Hearts
   public String toString() {
     return getStringValue() + " of " + getStringSuit();
+  }
+
+  // Short name of card, e.g. AH or 6D
+  public String toShortString() {
+    return getShortStringValue() + getShortStringSuit();
   }
 
   public static int getCardSuit(int cardNumber) {
@@ -167,35 +137,7 @@ public class Card {
     int cardSuit = getCardSuit(cardNumber);
     int cardValue = getCardValue(cardNumber, cardSuit);
 
-    switch (cardValue) {
-      case 2:
-        return "Two";
-      case 3:
-        return "Three";
-      case 4:
-        return "Four";
-      case 5:
-        return "Five";
-      case 6:
-        return "Six";
-      case 7:
-        return "Seven";
-      case 8:
-        return "Eight";
-      case 9:
-        return "Nine";
-      case 10:
-        return "Ten";
-      case 11:
-        return "Jack";
-      case 12:
-        return "Queen";
-      case 13:
-        return "King";
-      case 14:
-        return "Ace";
-      default:
-        return "Unknown";
-    }
+    // TODO duplication
+    return ranksLong[cardValue - 2];
   }
 }
