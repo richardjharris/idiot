@@ -15,22 +15,23 @@ public class GameAI {
     this.nine = nine;
   }
 
-  public String basicMove(Hand hand, Card[] pile, int pileSize) {
+  public String basicMove(Hand hand, CardPile pile, int pileSize) {
     // determining top card
     Card top;
-    if (pile[0] == null) {
+    if (pile.isEmpty()) {
       return playlowest(hand, 15, null);
-    } else if (nine == true && pile[0].getValue() == 9) {
+    } else if (nine == true && pile.topValue() == 9) {
       int topcount = 0;
+      // TODO rewrite this
       for (int i = 0; i < 52; i++) {
-        if (pile[i] == null) {
+        if (pile.get(i) == null) {
           return playlowest(hand, 15, null);
         }
-        if (pile[i].getValue() == 9) topcount++;
+        if (pile.get(i).getValue() == 9) topcount++;
         else break;
       }
-      top = pile[topcount];
-    } else top = pile[0];
+      top = pile.get(topcount);
+    } else top = pile.top();
 
     if (seven == true && top.getValue() == 7) {
       return playlowest(hand, 6, top);

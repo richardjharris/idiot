@@ -32,9 +32,8 @@ abstract public class PlayerBase {
   Graphics g;
   SHinterface sh;
 
-  // cards in play pile: up to 52, terminated by 'null'
-  Card pile[] = new Card[52];
-  // deck, hands. etc are managed by the dealer only
+  CardPile pile = new CardPile();
+  // Deck + hands are managed by the Dealer only; the Player sees counts.
 
   // scoreboard
   Score score;
@@ -82,49 +81,34 @@ abstract public class PlayerBase {
     return sh.getImageManager();
   }
 
-  // Utilities
-  protected boolean fourOfAKind(Card card) {
-    if (pile[0] == null || pile[1] == null || pile[2] == null || card == null)
-      return false;
-    int top = pile[0].getValue();
-    if (pile[1].getValue() == top && pile[2].getValue() == top && card.getValue() == top)
-      return true;
-    return false;
-  }
-
-  protected int pileSize() {
-    int cardCount = 0;
-    for (int n = 0; n < 52; n++) {
-      if (pile[n] == null) break;
-      cardCount++;
-    }
-    return cardCount;
-  }
-
-  protected boolean pileIsEmpty() {
-    return pile[0] == null;
-  }
-
+  // Clear pile and schedule BURNT graphic.
   protected void burnPile() {
-    System.out.println("Burning the pile");
-    for (int n = 0; n < 52; n++) {
-      pile[n] = null;
-    }
+    pile.clear();
     burnt = true;
   }
 
-  // Adds to the end of the pile
-  protected void addToPile(Card card) {
-    System.out.println("Adding " + card.toString() + " to the pile");
-    for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
-    pile[0] = card;
-
-    String pileString = "";
-    for (int i = 0; i <= 52; i++) {
-      if (pile[i] == null) break;
-      pileString += " " + pile[i].toShortString();
+  // Indicates if the given card value is allowed to go on top of the pile.
+  protected boolean canAddToPile(int value) {
+    if (pile.isEmpty()) {
+      // If pile is empty, any card is valid
+      return true;
     }
-    System.out.println("Pile is now: " + pileString);
+
+    if ((nine && value == 9) || value == 10 || value == 2) {
+      // These cards can go onto anything
+      return true;
+    }
+
+    int topValue = nine ? pile.topValueExcludingNines() : pile.topValue();
+    if (topValue == -1) {
+      // nine=true and pile only consists of 9s
+      return true;
+    }
+
+    if (seven && topValue == 7 && value >= 7) return false;
+    if (value < topValue) return false;
+
+    return true;
   }
 
   private void initTablePositions() {
@@ -156,7 +140,7 @@ abstract public class PlayerBase {
 
     drawOtherPlayerCards();
 
-    if (!pileIsEmpty()) {
+    if (pile.notEmpty()) {
       drawPile();
     } else if (burnt) {
       drawBurnt();
@@ -186,7 +170,7 @@ abstract public class PlayerBase {
     drawRoundRect(355, 5, 90, 40, 15, 15);
     g.setColor(Color.white);
     drawString("Deck: " + deckLength(), 365, 20);
-    drawString("Pile: " + pileSize(), 365, 40);
+    drawString("Pile: " + pile.size(), 365, 40);
 
     drawRoundRect(5, 360, 90, 40, 15, 15);
     drawString("Name: " + otherNames[0], 10, 375);
@@ -240,6 +224,9 @@ abstract public class PlayerBase {
   }
 
   protected void drawPile() {
+    // HACK as I don't feel like rewriting this yet.
+    Card[] pile = this.pile.rawData();
+
     // determining how many cards of the same value are ontop of each other
     int top = 0;
     if (nine == true && pile[0].getValue() == 9) {
