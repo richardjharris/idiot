@@ -1,6 +1,3 @@
-import java.awt.*;
-import java.awt.image.*;
-
 /**
  * Card Class
  *
@@ -97,8 +94,6 @@ public class Card {
   public static String getCardStringValue(int cardNumber) {
     int cardSuit = getCardSuit(cardNumber);
     int cardValue = getCardValue(cardNumber, cardSuit);
-
-    // TODO duplication
     return ranksLong[cardValue - 2];
   }
 }

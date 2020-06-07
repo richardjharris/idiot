@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.Vector;
 
 /**
  * Class that holds code common to both the Dealer (game host) and Player (other
@@ -223,7 +224,7 @@ abstract public class PlayerBase {
     g.drawImage(burnBang, xy.x, xy.y, sh);
   }
 
-  protected void drawPile() {
+  protected void drawPileOld() {
     // HACK as I don't feel like rewriting this yet.
     // TODO scale the offsets?
     Card[] pile = this.pile.rawData();
@@ -265,6 +266,69 @@ abstract public class PlayerBase {
       sh.drawSideways(pile[2], (int) centre1.getX() - 15, (int) centre1.getY() + 40);
       sh.drawSideways(pile[1], (int) centre1.getX() - 15, (int) centre1.getY() + 50);
       sh.drawSideways(pile[0], (int) centre1.getX() - 15, (int) centre1.getY() + 60);
+    }
+  }
+
+  // New version of drawPile. Draws the ENTIRE pile.
+  protected void drawPile() {
+    Card[] pile = this.pile.rawData();
+
+    // Convert the pile into stacks. Stacks of 9s will be rendered
+    // sideways.
+    int stackCount = 0;
+    int prev = -1;
+    for (int i = 0; i < 52; i++) {
+      if (pile[i] == null) break;
+      if (prev != pile[i].getValue()) {
+        prev = pile[i].getValue();
+        stackCount++;
+      }
+    }
+
+    Point centre = new Point(
+      (int)(centre1.x - stackCount * 0.5),
+      (int)(centre1.y - stackCount * 0.5)
+    );
+
+    double offsetDelta = stackCount >= 10 ? 2.0 : 3.0;
+
+    // Start rendering the pile in reverse.
+    Vector<Card> stack = new Vector<Card>();
+    for (int i = 51; i >= 0; i--) {
+      if (pile[i] == null) continue;
+      // Consider 9s part of the same stack if applicable
+      if (!stack.isEmpty() && stack.get(0).getValue() != pile[i].getValue()
+        && (!nine || pile[i].getValue() != 9)) {
+        // Start a new stack
+        drawCardStack(stack, centre);
+        centre.x += offsetDelta;
+        centre.y += offsetDelta;
+        stack = new Vector<Card>();
+      }
+      stack.add(pile[i]);
+    }
+    if (!stack.isEmpty()) {
+      drawCardStack(stack, centre);
+    }
+  }
+
+  // Helper method for drawPile
+  private void drawCardStack(Vector<Card> stack, Point centre) {
+    // Fan cards out from centre (maybe subject to scaling)
+    // 20 pixels per card
+    int spacing = stack.size() == 2 ? 10 : 20;
+    int verticalSize = stack.size() * spacing;
+    Point c = new Point(centre.x, (int)(centre.y - verticalSize / 2));
+
+    for (Card card: stack) {
+      boolean sideways = nine && card.getValue() == 9;
+      Point c2 = (Point)c.clone();
+      if (sideways) {
+        c2.x -= 15;
+        c2.y += 30;
+      }
+      sh.drawCard(card, c2, sideways);
+      c.y += spacing;
     }
   }
 
