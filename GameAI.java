@@ -15,7 +15,7 @@ public class GameAI {
     this.nine = nine;
   }
 
-  public String basicMove(Hand hand, Card[] pile, int pilelength) {
+  public String basicMove(Hand hand, Card[] pile, int pileSize) {
     // determining top card
     Card top;
     if (pile[0] == null) {

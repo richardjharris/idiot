@@ -84,26 +84,40 @@ abstract public class PlayerBase {
 
   // Utilities
   protected boolean fourOfAKind(Card card) {
-    if (pile[0] == null || pile[1] == null || pile[2] == null || card == null) return false;
+    if (pile[0] == null || pile[1] == null || pile[2] == null || card == null)
+      return false;
     int top = pile[0].getValue();
     if (pile[1].getValue() == top && pile[2].getValue() == top && card.getValue() == top)
       return true;
     return false;
   }
 
-  protected void addcardtopile(Card card) {
-    // adding card to pile
-    for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
-    pile[0] = card;
-  }
-
-  protected int pilelength() {
+  protected int pileSize() {
     int cardCount = 0;
     for (int n = 0; n < 52; n++) {
       if (pile[n] == null) break;
       cardCount++;
     }
     return cardCount;
+  }
+
+  protected boolean pileIsEmpty() {
+    return pile[0] == null;
+  }
+
+  protected void burnPile() {
+    System.out.println("Burning the pile");
+    for (int n = 0; n < 52; n++) {
+      pile[n] = null;
+    }
+    burnt = true;
+  }
+
+  // Adds to the end of the pile
+  protected void addToPile(Card card) {
+    System.out.println("Adding " + card.toString() + " to the pile");
+    for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
+    pile[0] = card;
   }
 
   private void initTablePositions() {
@@ -142,7 +156,7 @@ abstract public class PlayerBase {
     }
     System.out.println("Pile: " + pileStr);
 
-    if (pile[0] != null) {
+    if (!pileIsEmpty()) {
       drawPile();
     } else if (burnt) {
       drawBurnt();
@@ -172,7 +186,7 @@ abstract public class PlayerBase {
     drawRoundRect(355, 5, 90, 40, 15, 15);
     g.setColor(Color.white);
     drawString("Deck: " + deckLength(), 365, 20);
-    drawString("Pile: " + pilelength(), 365, 40);
+    drawString("Pile: " + pileSize(), 365, 40);
 
     drawRoundRect(5, 360, 90, 40, 15, 15);
     drawString("Name: " + otherNames[0], 10, 375);

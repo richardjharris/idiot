@@ -6,7 +6,8 @@ import java.net.*;
 /**
  * Class for controlling game play ie game dealer
  * 
- * The Dealer class is the host of network games. Players form the other 3.
+ * The Dealer class is the host of network games. Non-host players use the
+ * Player class.
  *
  * @author Sam Cavenagh
  * @version 6/11/02
@@ -547,7 +548,7 @@ class Dealer extends PlayerBase {
             + ":"
             + card.getNumber()
             + ":";
-    addcardtopile(card);
+    addToPile(card);
     numbertoplay--;
     for (int n = 0; n < 3; n++)
       if (ownHand().getFaceUp(n) != null) {
@@ -555,7 +556,7 @@ class Dealer extends PlayerBase {
         if (card.getValue() == ownHand().getFaceUp(n).getValue()
             && card.getNumber() != ownHand().getFaceUp(n).getNumber()) {
           command = command.concat(ownHand().getFaceUp(n).getNumber() + ":");
-          addcardtopile(ownHand().getFaceUp(n));
+          addToPile(ownHand().getFaceUp(n));
           // storing which card are to be removed
           ownHand().removeFaceUp(n);
           numbertoplay--;
@@ -565,8 +566,7 @@ class Dealer extends PlayerBase {
     for (int n = 0; n < 3; n++) sendCommand(command, n);
     // checking for 4 of a kind
     if (fourOfAKind(pile[3]) || pile[0].getValue() == 10) {
-      burnt = true;
-      for (int n = 0; n < 51; n++) pile[n] = null;
+      burnPile();
       sh.addMsg("You burn the pile is your turn again");
     } else {
       sh.setmyTurn(false);
@@ -615,7 +615,7 @@ class Dealer extends PlayerBase {
     if (numbertoplay <= 1) return false;
     String command =
         "othersturn:" + playersName + ":multi:" + numbertoplay + ":" + card.getNumber() + ":";
-    addcardtopile(card);
+    addToPile(card);
     numbertoplay--;
     int toberemovedcount = 0;
     int toberemoved[] = new int[3];
@@ -626,7 +626,7 @@ class Dealer extends PlayerBase {
       if (card.getValue() == ownHand().getCard(n).getValue()
           && card.getNumber() != ownHand().getCard(n).getNumber()) {
         command = command.concat(ownHand().getCard(n).getNumber() + ":");
-        addcardtopile(ownHand().getCard(n));
+        addToPile(ownHand().getCard(n));
         // storing which card are to be removed
         toberemoved[toberemovedcount] = ownHand().getCard(n).getNumber();
         toberemovedcount++;
@@ -646,8 +646,7 @@ class Dealer extends PlayerBase {
     for (int n = 0; n < 3; n++) sendCommand(command, n);
     // checking for 4 of a kind
     if (fourOfAKind(pile[3]) || pile[0].getValue() == 10) {
-      burnt = true;
-      for (int n = 0; n < 51; n++) pile[n] = null;
+      burnPile();
       // checking if player is out of game
       if (ownHand().getFaceDown(0) == null
           && ownHand().getFaceDown(1) == null
@@ -696,8 +695,7 @@ class Dealer extends PlayerBase {
       return true;
     } else if (card.getValue() == 10
         || fourOfAKind(card)) { // pile is burn and its players turn again
-      burnt = true;
-      for (int n = 0; n < 51; n++) pile[n] = null;
+      burnPile();
       if (ownHand().isFaceDown() == true || ownHand().length() > 1) {
         for (int n = 0; n < 3; n++)
           if (ownHand().length() > 1) sendCommand(command + "burn:", n);
@@ -711,7 +709,7 @@ class Dealer extends PlayerBase {
         nextTurn();
       }
       return true;
-    } else if (pile[0] == null) {
+    } else if (pileIsEmpty()) {
       cardAccepted(card, command);
       return true;
     } else if (nine == true && card.getValue() == 9) {
@@ -752,8 +750,7 @@ class Dealer extends PlayerBase {
     // sending move to other players
     for (int n = 0; n < 3; n++) sendCommand(command + card.getNumber() + ":", n);
     // adding card to pile
-    for (int n = 51; n > 0; n--) pile[n] = pile[n - 1];
-    pile[0] = card;
+    addToPile(card);
     sh.setmyTurn(false);
     nextTurn();
   }
@@ -806,13 +803,11 @@ class Dealer extends PlayerBase {
               if (hands[whosturn].getFaceUp(n).getValue() == 10
                   || fourOfAKind(hands[whosturn].getFaceUp(n))
                       == true) { // if card is 10 burning the deck
-                burnt = true;
-                for (int i = 0; i < 52; i++) pile[i] = null;
+                burnPile();
                 burn = true;
                 sh.addMsg(otherNames[whosturn] + " burnt the pile");
               } else { // else adding card to pile
-                for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
-                pile[0] = hands[whosturn].getFaceUp(n);
+                addToPile(hands[whosturn].getFaceUp(n));
               }
               hands[whosturn].removeFaceUp(n);
               break;
@@ -885,14 +880,12 @@ class Dealer extends PlayerBase {
               if (hands[whosturn].getFaceDown(n).getValue() == 10
                   || fourOfAKind(hands[whosturn].getFaceDown(n))
                       == true) { // if card is 10 burning the deck
-                burnt = true;
-                for (int i = 0; i < 52; i++) pile[i] = null;
+                burnPile();
                 if (hands[whosturn].isFaceDown() == true || hands[whosturn].length() > 1)
                   burn = true;
                 sh.addMsg(otherNames[whosturn] + " burnt the pile");
               } else { // else adding card to pile
-                for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
-                pile[0] = hands[whosturn].getFaceDown(n);
+                addToPile(hands[whosturn].getFaceDown(n));
               }
               hands[whosturn].removeFaceDown(n);
               break;
@@ -953,7 +946,7 @@ class Dealer extends PlayerBase {
             location = i;
             break;
           }
-        addcardtopile(hands[whosturn].getCard(location));
+        addToPile(hands[whosturn].getCard(location));
         command = command.concat(hands[whosturn].getCard(location).getNumber() + ":");
         hands[whosturn].removeCard(location);
       }
@@ -974,10 +967,11 @@ class Dealer extends PlayerBase {
           && hands[whosturn].getCard(0) == null) outofgame(whosturn);
       // checking for 4 of a kind else next players turn
       if (fourOfAKind(pile[3]) || pile[0].getValue() == 10) {
-        if (!outofgame[whosturn]) burnt = true;
-        for (int n = 0; n < 51; n++) pile[n] = null;
-        sh.addMsg(otherNames[whosturn] + " burn the pile");
-        burn = true;
+        if (!outofgame[whosturn]) {
+          burnPile();
+          sh.addMsg(otherNames[whosturn] + " burn the pile");
+          burn = true;
+        }
       }
 
     } else { // regular game play
@@ -996,13 +990,11 @@ class Dealer extends PlayerBase {
           if (hands[whosturn].getCard(n).getValue() == 10
               || fourOfAKind(hands[whosturn].getCard(n))
                   == true) { // if card is 10 burning the deck
-            burnt = true;
-            for (int i = 0; i < 52; i++) pile[i] = null;
+            burnPile();
             burn = true;
             sh.addMsg(otherNames[whosturn] + " burnt the pile");
           } else { // else adding card to pile
-            for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
-            pile[0] = hands[whosturn].getCard(n);
+            addToPile(hands[whosturn].getCard(n));
           }
           hands[whosturn].removeCard(n);
           break;
@@ -1088,7 +1080,7 @@ class Dealer extends PlayerBase {
             location = i;
             break;
           }
-      addcardtopile(hands[whosturn].getFaceUp(location));
+      addToPile(hands[whosturn].getFaceUp(location));
       command = command.concat(hands[whosturn].getFaceUp(location).getNumber() + ":");
       hands[whosturn].removeFaceUp(location);
     }
@@ -1096,8 +1088,7 @@ class Dealer extends PlayerBase {
     for (int n = 0; n < 3; n++) if (n != whosturn) sendCommand(command, n);
     // checking for 4 of a kind else next players turn
     if (fourOfAKind(pile[3]) || pile[0].getValue() == 10) {
-      burnt = true;
-      for (int n = 0; n < 51; n++) pile[n] = null;
+      burnPile();
       sh.addMsg(otherNames[whosturn] + " burn the pile");
       return true;
     }
@@ -1418,7 +1409,7 @@ class Dealer extends PlayerBase {
       }
 
       // Using gameAI to process move
-      String command = ai.basicMove(hands[whosturn], pile, pilelength());
+      String command = ai.basicMove(hands[whosturn], pile, pileSize());
 
       // if gameAI generates valid move, process move
       if (!command.equals("error") && implaying == whosturn && currentID == gameID)

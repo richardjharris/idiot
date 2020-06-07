@@ -89,6 +89,21 @@ public class Card {
    *
    *-------------------------------*/
 
+  public String getStringSuit() {
+    switch (cardSuit) {
+      case 1:
+        return "Hearts";
+      case 2:
+        return "Spades";
+      case 3:
+        return "Diamonds";
+      case 4:
+        return "Clubs";
+      default:
+        return "Unknown";
+    }
+  }
+
   public String getStringValue() {
     switch (cardValue) {
       case 2:
@@ -120,6 +135,10 @@ public class Card {
       default:
         return "Unknown";
     }
+  }
+
+  public String toString() {
+    return getStringValue() + " of " + getStringSuit();
   }
 
   public static int getCardSuit(int cardNumber) {

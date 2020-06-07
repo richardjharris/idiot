@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 
@@ -205,12 +204,11 @@ class Player extends PlayerBase {
       return true;
     } else if (card.getValue() == 10
         || fourOfAKind(card) == true) { // pile is burn and its players turn again
-      burnt = true;
-      for (int n = 0; n < 51; n++) pile[n] = null;
+      burnPile();
       sendCommand(command + card.getNumber() + ":");
       sh.addMsg("You have burnt the pile, its your turn again");
       return true;
-    } else if (pile[0] == null) {
+    } else if (pileIsEmpty()) {
       cardAccepted(card, command);
       return true;
     } else if (nine == true && card.getValue() == 9) {
@@ -285,7 +283,7 @@ class Player extends PlayerBase {
     int numbertoplay = dialog.getChoice();
     if (numbertoplay <= 1) return false;
     String command = "turn:multi:" + numbertoplay + ":" + card.getNumber() + ":";
-    addcardtopile(card);
+    addToPile(card);
     numbertoplay--;
     int toberemovedcount = 0;
     int toberemoved[] = new int[3];
@@ -296,7 +294,7 @@ class Player extends PlayerBase {
       if (card.getValue() == hand.getCard(n).getValue()
           && card.getNumber() != hand.getCard(n).getNumber()) {
         command = command.concat(hand.getCard(n).getNumber() + ":");
-        addcardtopile(hand.getCard(n));
+        addToPile(hand.getCard(n));
         // storing which card are to be removed
         toberemoved[toberemovedcount] = hand.getCard(n).getNumber();
         toberemovedcount++;
@@ -316,8 +314,7 @@ class Player extends PlayerBase {
     sendCommand(command);
     // checking for 4 of a kind
     if (fourOfAKind(pile[3]) || pile[0].getValue() == 10) {
-      burnt = true;
-      for (int n = 0; n < 51; n++) pile[n] = null;
+      burnPile();
       sh.addMsg("You burn the pile is your turn again");
     } else {
       sh.setmyTurn(false);
@@ -365,7 +362,7 @@ class Player extends PlayerBase {
     int numbertoplay = dialog.getChoice();
     if (numbertoplay <= 1) return false;
     String command = "turn:faceup:multi:" + numbertoplay + ":" + card.getNumber() + ":";
-    addcardtopile(card);
+    addToPile(card);
     numbertoplay--;
     int toberemovedcount = 0;
     int toberemoved[] = new int[3];
@@ -376,7 +373,7 @@ class Player extends PlayerBase {
         if (card.getValue() == hand.getFaceUp(n).getValue()
             && card.getNumber() != hand.getFaceUp(n).getNumber()) {
           command = command.concat(hand.getFaceUp(n).getNumber() + ":");
-          addcardtopile(hand.getFaceUp(n));
+          addToPile(hand.getFaceUp(n));
           // storing which card are to be removed
           toberemoved[toberemovedcount] = hand.getFaceUp(n).getNumber();
           toberemovedcount++;
@@ -397,8 +394,7 @@ class Player extends PlayerBase {
     sendCommand(command);
     // checking for 4 of a kind
     if (fourOfAKind(pile[3]) || pile[0].getValue() == 10) {
-      burnt = true;
-      for (int n = 0; n < 51; n++) pile[n] = null;
+      burnPile();
       sh.addMsg("You burn the pile is your turn again");
     } else {
       sh.setmyTurn(false);
@@ -410,8 +406,7 @@ class Player extends PlayerBase {
   private void cardAccepted(Card card, String command) {
     sendCommand(command + card.getNumber() + ":");
     // adding card to pile
-    for (int n = 51; n > 0; n--) pile[n] = pile[n - 1];
-    pile[0] = card;
+    addToPile(card);
     sh.setmyTurn(false);
     nextTurn();
   }
@@ -640,15 +635,14 @@ class Player extends PlayerBase {
         }
 
       if (cardno.equals("pickup")) { // other players picks up pile
-        cardcount[playernumber] = cardcount[playernumber] + pilelength();
+        cardcount[playernumber] = cardcount[playernumber] + pileSize();
         for (int n = 0; n < 52; n++) pile[n] = null;
         sh.addMsg(otherNames[playernumber] + " picked up the pile");
       } else if (cardno.equals("burn")) { // other player burns the pile
-        burnt = true;
+        burnPile();
         burn = true;
         // removing cards from pile
         sh.addMsg(name + " burnt the pile.");
-        for (int n = 0; n < 51; n++) pile[n] = null;
         if (deck == 0 || cardcount[playernumber] > 3) {
           if (cardcount[playernumber] > 0) cardcount[playernumber]--;
         } else deck--;
@@ -668,15 +662,13 @@ class Player extends PlayerBase {
           try {
             Card card = new Card(Integer.parseInt(cardno2), sh, g);
             // adding card to pile
-            for (int n = 51; n > 0; n--) pile[n] = pile[n - 1];
-            pile[0] = card;
+            addToPile(card);
             // burning pile if a 10 is played
             if (pile[0].getValue() == 10 || fourOfAKind(pile[3]) == true) {
-              burnt = true;
+              burnPile();
               burn = true;
               // removing cards from pile
               sh.addMsg(name + " burnt the pile.");
-              for (int n = 0; n < 51; n++) pile[n] = null;
             }
             // removing card from table
             for (int n = 0; n < 3; n++)
@@ -714,7 +706,7 @@ class Player extends PlayerBase {
           } catch (NumberFormatException b) {
             sh.addMsg("processTurn - facedown pickup - variable to Int error: " + b);
           }
-          cardcount[playernumber] = cardcount[playernumber] + pilelength() + 1;
+          cardcount[playernumber] = cardcount[playernumber] + pileSize() + 1;
           for (int n = 0; n < 52; n++) pile[n] = null;
           sh.addMsg(
               otherNames[playernumber]
@@ -724,15 +716,13 @@ class Player extends PlayerBase {
         } else {
           try {
             Card card = new Card(Integer.parseInt(cardno2), sh, g);
-            for (int n = 51; n > 0; n--) pile[n] = pile[n - 1];
-            pile[0] = card;
+            addToPile(card);
             // burning pile if a 10 is played
             if (pile[0].getValue() == 10 || fourOfAKind(pile[3]) == true) {
-              burnt = true;
+              burnPile();
               burn = true;
               // removing cards from pile
               sh.addMsg(name + " burnt the pile.");
-              for (int n = 0; n < 51; n++) pile[n] = null;
             }
           } catch (NumberFormatException b) {
             sh.addMsg("Otherplayer - variable to Int error: " + b);
@@ -772,7 +762,7 @@ class Player extends PlayerBase {
           // converting string to int for processing
           try {
             Card card = new Card(Integer.parseInt(cardnoString), sh, g);
-            addcardtopile(card);
+            addToPile(card);
           } catch (NumberFormatException b) {
             sh.addMsg("processTurn - multi - variable to Int error: " + b);
           }
@@ -784,26 +774,23 @@ class Player extends PlayerBase {
 
         // burning pile if a 10 is played or 4 of a kind
         if (pile[0].getValue() == 10 || fourOfAKind(pile[3]) == true) {
-          burnt = true;
+          burnPile();
           burn = true;
           // removing cards from pile
           sh.addMsg(name + " burnt the pile.");
-          for (int i = 0; i < 51; i++) pile[i] = null;
         }
 
       } else {
         // adding card to pile
         try {
           Card card = new Card(Integer.parseInt(cardno), sh, g);
-          for (int n = 51; n > 0; n--) pile[n] = pile[n - 1];
-          pile[0] = card;
+          addToPile(card);
           // burning pile if a 10 is played
           if (pile[0].getValue() == 10 || fourOfAKind(pile[3]) == true) {
             burn = true;
-            burnt = true;
+            burnPile();
             // removing cards from pile
             sh.addMsg(name + " burnt the pile.");
-            for (int n = 0; n < 51; n++) pile[n] = null;
           }
         } catch (NumberFormatException b) {
           sh.addMsg("Otherplayer else - variable to Int error: " + b);
@@ -850,7 +837,7 @@ class Player extends PlayerBase {
         // converting string to int for processing
         try {
           Card card = new Card(Integer.parseInt(cardnoString), sh, g);
-          addcardtopile(card);
+          addToPile(card);
 
           for (int i = 0; i < 3; i++)
             if (faceup[playernumber][i] != null)
@@ -864,11 +851,10 @@ class Player extends PlayerBase {
       }
       // burning pile if a 10 is played or 4 of a kind
       if (pile[0].getValue() == 10 || fourOfAKind(pile[3]) == true) {
-        burnt = true;
+        burnPile();
         burn = true;
         // removing cards from pile
         sh.addMsg(otherNames[playernumber] + " burnt the pile.");
-        for (int i = 0; i < 51; i++) pile[i] = null;
       }
       return burn;
     }
