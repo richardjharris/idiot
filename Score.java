@@ -49,7 +49,7 @@ public class Score extends JDialog implements ActionListener {
   public Score(JFrame parent) {
 
     super(parent, "Scoreboard", true);
-    setSize(300, 200);
+    setSize(400, 300);
     Point p = parent.getLocation();
     setLocation((int) p.getX() + 80, (int) p.getY() + 100);
 

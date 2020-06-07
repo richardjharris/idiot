@@ -38,7 +38,7 @@ public class PlayerD extends JDialog implements ActionListener {
   public PlayerD(JFrame parent) {
 
     super(parent, "Players Details", true);
-    setSize(200, 100);
+    setSize(300, 200);
     Point p = parent.getLocation();
     setLocation((int) p.getX() + 80, (int) p.getY() + 100);
 

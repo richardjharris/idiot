@@ -379,17 +379,27 @@ class Dealer {
 
   // Scaled drawing routines
   private void drawRoundRect(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
-    g.drawRoundRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3), sh.scale(arg4), sh.scale(arg5));
+    g.drawRoundRect(
+        sh.scale(arg0),
+        sh.scale(arg1),
+        sh.scale(arg2),
+        sh.scale(arg3),
+        sh.scale(arg4),
+        sh.scale(arg5));
   }
+
   private void drawLine(int arg0, int arg1, int arg2, int arg3) {
     g.drawLine(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
   }
+
   private void fillRect(int arg0, int arg1, int arg2, int arg3) {
     g.fillRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
   }
+
   private void drawString(String s, int x, int y) {
     g.drawString(s, sh.scale(x), sh.scale(y));
   }
+
   private void drawImage(Image i, int x, int y) {
     g.drawImage(i, sh.scale(x), sh.scale(y), sh);
   }
@@ -414,7 +424,7 @@ class Dealer {
     drawString("Name: " + otherNames[0], 10, 375);
     drawString("Cards: " + (hands[0].length() - 1), 10, 395);
     drawImage(im.getPointer(1), 68, 380);
-    
+
     // tableposition is already scaled
     if (hands[0].getFaceUp(0) != null) hands[0].getFaceUp(0).drawSideWays(tableposition[0][0]);
     else if (hands[0].getFaceDown(0) != null)
@@ -426,10 +436,10 @@ class Dealer {
     else if (hands[0].getFaceDown(2) != null)
       g.drawImage(backSW, (int) tableposition[0][2].getX(), (int) tableposition[0][2].getY(), sh);
 
-      drawRoundRect(5, 5, 90, 40, 15, 15);
-      drawString("Name: " + otherNames[1], 10, 20);
-      drawString("Cards: " + (hands[1].length() - 1), 10, 40);
-      drawImage(im.getPointer(2), 70, 25);      
+    drawRoundRect(5, 5, 90, 40, 15, 15);
+    drawString("Name: " + otherNames[1], 10, 20);
+    drawString("Cards: " + (hands[1].length() - 1), 10, 40);
+    drawImage(im.getPointer(2), 70, 25);
 
     if (hands[1].getFaceUp(0) != null) hands[1].getFaceUp(0).drawCard(tableposition[1][0]);
     else if (hands[1].getFaceDown(0) != null)
@@ -441,10 +451,10 @@ class Dealer {
     else if (hands[1].getFaceDown(2) != null)
       g.drawImage(back, (int) tableposition[1][2].getX(), (int) tableposition[1][2].getY(), sh);
 
-      drawRoundRect(355, 360, 90, 40, 15, 15);
-      drawString("Name: " + otherNames[2], 360, 375); // 365
-      drawString("Cards: " + (hands[2].length() - 1), 360, 395); // 365
-      drawImage(im.getPointer(1), 423, 380);
+    drawRoundRect(355, 360, 90, 40, 15, 15);
+    drawString("Name: " + otherNames[2], 360, 375); // 365
+    drawString("Cards: " + (hands[2].length() - 1), 360, 395); // 365
+    drawImage(im.getPointer(1), 423, 380);
 
     if (hands[2].getFaceUp(0) != null) hands[2].getFaceUp(0).drawSideWays(tableposition[2][0]);
     else if (hands[2].getFaceDown(0) != null)

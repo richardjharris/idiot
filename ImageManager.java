@@ -1,4 +1,3 @@
-import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.MediaTracker;
 import java.awt.RenderingHints;
@@ -135,9 +134,8 @@ public class ImageManager {
 
     Graphics2D graphics2D = dest.createGraphics();
     graphics2D.setRenderingHint(
-      RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-    graphics2D.setRenderingHint(
-      RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+    graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     graphics2D.drawImage(src, 0, 0, newWidth, newHeight, null);
     graphics2D.dispose();
 

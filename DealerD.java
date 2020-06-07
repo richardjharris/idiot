@@ -44,7 +44,7 @@ public class DealerD extends JDialog implements ActionListener {
   public DealerD(JFrame parent) {
 
     super(parent, "Players Details", true);
-    setSize(250, 150);
+    setSize(400, 200);
     Point p = parent.getLocation();
     setLocation((int) p.getX() + 80, (int) p.getY() + 100);
 

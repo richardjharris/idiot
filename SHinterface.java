@@ -3,8 +3,8 @@ import java.awt.Color;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.*;
-import javax.swing.*;
 import java.io.IOException;
+import javax.swing.*;
 
 /*-------------------------------
  This is a Shithead(card game) Program
@@ -90,7 +90,7 @@ class SHinterface extends JFrame
   ImageManager imageManager;
 
   int scale(int number) {
-    return (int)(number * scaleFactor);
+    return (int) (number * scaleFactor);
   }
 
   SHinterface() {
@@ -132,7 +132,9 @@ class SHinterface extends JFrame
 
     scrollPane =
         new JScrollPane(
-            msg, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            msg,
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
     // Testing if images loaded correctly -  doesnt need to do this with jar file
     // File f = new File("cards.gif");

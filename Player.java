@@ -192,17 +192,27 @@ class Player {
 
   // TODO copied from Dealer for now
   private void drawRoundRect(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
-    g.drawRoundRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3), sh.scale(arg4), sh.scale(arg5));
+    g.drawRoundRect(
+        sh.scale(arg0),
+        sh.scale(arg1),
+        sh.scale(arg2),
+        sh.scale(arg3),
+        sh.scale(arg4),
+        sh.scale(arg5));
   }
+
   private void drawLine(int arg0, int arg1, int arg2, int arg3) {
     g.drawLine(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
   }
+
   private void fillRect(int arg0, int arg1, int arg2, int arg3) {
     g.fillRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
   }
+
   private void drawString(String s, int x, int y) {
     g.drawString(s, sh.scale(x), sh.scale(y));
   }
+
   private void drawImage(Image i, int x, int y) {
     g.drawImage(i, sh.scale(x), sh.scale(y), sh);
   }
