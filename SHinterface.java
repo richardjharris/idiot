@@ -8,6 +8,9 @@ import javax.swing.*;
 // TODO(release) Dialogs (e.g. MultiCardD) should appear in the center
 // TODO Set scaling based on resolution
 // TODO graphical way of indicating hand sizes
+// TODO random card backs
+// TODO fix rightmost hand position
+// TODO right-click (or middle) to send all cards
 
 /*-------------------------------
  This is a Shithead(card game) Program
