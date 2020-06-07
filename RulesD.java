@@ -1,9 +1,13 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+
 import javax.swing.*;
 
 /** Dialog for displaying game rules */
@@ -50,7 +54,12 @@ public class RulesD extends JDialog implements ActionListener {
   private String loadRules() {
     String rules;
     try (InputStream rulesInput = getClass().getResourceAsStream("rules.txt")) {
-      rules = new String(rulesInput.readAllBytes(), StandardCharsets.UTF_8);
+      // Java 11
+      //rules = new String(rulesInput.readAllBytes(), StandardCharsets.UTF_8);
+      // Java 8
+      rules = new BufferedReader(new InputStreamReader(rulesInput, StandardCharsets.UTF_8))
+      .lines()
+      .collect(Collectors.joining("\n"));
     } catch (IOException e) {
       rules = "Encountered an error opening the rules file.";
     }
