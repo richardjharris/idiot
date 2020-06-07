@@ -361,7 +361,7 @@ class Player {
           sh.addMsg(
               "The card you played was a "
                   + hand.getFaceDown(cardno).getStringValue()
-                  + " you had to pick up the pile");
+                  + " you had to pick up the pile. BLAOW");
           for (int n = 0; n < 52; n++) {
             if (pile[n] == null) break;
             hand.addCard(pile[n]);
@@ -1172,7 +1172,7 @@ class Player {
           sh.addMsg(
               "The card played was a "
                   + pile[top].getStringValue()
-                  + " you had to pick up the pile");
+                  + " you had to pick up the pile. BLAOW");
           for (int n = 0; n < 52; n++) {
             if (pile[n] == null) break;
             hand.addCard(pile[n]);

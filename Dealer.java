@@ -647,7 +647,7 @@ class Dealer {
           sh.addMsg(
               "The card you played was a "
                   + hands[3].getFaceDown(cardno).getStringValue()
-                  + " you had to pick up the pile");
+                  + " you had to pick up the pile. BLAOW");
           hands[3].addCard(hands[3].getFaceDown(cardno));
           for (int n = 0; n < 3; n++)
             sendCommand(
@@ -1070,7 +1070,7 @@ class Dealer {
                   otherNames[whosturn]
                       + " played a "
                       + Card.getCardStringValue(cardNo)
-                      + " and had to pick up the deck");
+                      + " and had to pick up the deck. AWRGH");
               hands[whosturn].removeFaceDown(n);
               break;
             }
@@ -1396,7 +1396,7 @@ class Dealer {
         sh.setmyTurn(true);
       } else { // cant play then must pick up the pile
         sh.addMsg(
-            "The card played was a " + pile[top].getStringValue() + " you had to pick up the pile");
+            "The card played was a " + pile[top].getStringValue() + " you had to pick up the pile. BLAOW");
         for (int n = 0; n < 52; n++) {
           if (pile[n] == null) break;
           hands[3].addCard(pile[n]);

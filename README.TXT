@@ -28,7 +28,11 @@ someone else wants to do it great.  I only have a few requests listed below.
     that don't have the time or skill to implement changes themselves
 3.	I'm still given some form of credit for the program's creation (even if only as a footnote)
 
-
-
-
-
+CHANGES APPLIED
+ - Chat box moved to right
+ - Gameplay area scaled up by 1.5x
+ - New set of higher resolution card images
+ - Sound effects!
+ - In-jokes added to chat log
+ - Rules now viewable in-game (without a browser)
+ - Some basic refactoring (still a LOT left to do)
