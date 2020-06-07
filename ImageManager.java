@@ -21,8 +21,10 @@ public class ImageManager {
   private BufferedImage pointer[] = new BufferedImage[4];
   private BufferedImage cardBackSideways;
 
-  private static final int cardWidth = 101;
-  private static final int cardHeight = 149;
+  private static final int baseCardWidth = 101;
+  private static final int baseCardHeight = 149;
+
+  private int cardWidth, cardHeight;
 
   // These are in the same numbered order as the other SH code.
   // suits: 1-4
@@ -30,8 +32,11 @@ public class ImageManager {
   // ranks: 2-10, 11(J), 12(Q), 13(K), 14(A)
   private String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
-  ImageManager(Component parent) throws InterruptedException, IOException {
-    MediaTracker tracker = new MediaTracker(parent);
+  ImageManager(SHinterface sh) throws InterruptedException, IOException {
+    MediaTracker tracker = new MediaTracker(sh);
+
+    cardWidth = sh.scale(baseCardWidth);
+    cardHeight = sh.scale(baseCardHeight);
 
     // List of files to load
     ArrayList<String> files = new ArrayList<String>();

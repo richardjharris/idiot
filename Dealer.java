@@ -107,6 +107,7 @@ class Dealer {
       aiPlayer[n] = false;
     }
 
+    // TODO scale?
     tableposition[0][0] = new Point(0, 103);
     tableposition[0][1] = new Point(0, 188);
     tableposition[0][2] = new Point(0, 276);
@@ -376,26 +377,45 @@ class Dealer {
     endConnection();
   }
 
+  // Scaled drawing routines
+  private void drawRoundRect(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+    g.drawRoundRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3), sh.scale(arg4), sh.scale(arg5));
+  }
+  private void drawLine(int arg0, int arg1, int arg2, int arg3) {
+    g.drawLine(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
+  }
+  private void fillRect(int arg0, int arg1, int arg2, int arg3) {
+    g.fillRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
+  }
+  private void drawString(String s, int x, int y) {
+    g.drawString(s, sh.scale(x), sh.scale(y));
+  }
+  private void drawImage(Image i, int x, int y) {
+    g.drawImage(i, sh.scale(x), sh.scale(y), sh);
+  }
+
   public void displayTable() {
     ImageManager im = sh.getImageManager();
     BufferedImage back = im.getCardBack();
     BufferedImage backSW = im.getCardBackSideways();
 
     g.setColor(Color.black);
-    g.fillRect(0, 0, 675, 825);
+    fillRect(0, 0, 450, 550);
     g.setColor(Color.white);
-    g.drawLine(0, 675, 675, 675);
+    drawLine(0, 450, 450, 450);
     g.setColor(Color.red);
-    g.drawRoundRect(533, 7, 135, 60, 23, 23);
+    drawRoundRect(355, 5, 90, 40, 15, 15);
     g.setColor(Color.white);
-    g.drawString("Deck: " + decklength(), 548, 30);
-    g.drawString("Pile: " + pilelength(), 548, 60);
+    drawString("Deck: " + decklength(), 365, 20);
+    drawString("Pile: " + pilelength(), 365, 40);
     hands[3].showHand();
 
-    g.drawRoundRect(8, 540, 135, 60, 23, 23);
-    g.drawString("Name: " + otherNames[0], 15, 563);
-    g.drawString("Cards: " + (hands[0].length() - 1), 15, 593);
-    g.drawImage(im.getPointer(1), 102, 570, sh);
+    drawRoundRect(5, 360, 90, 40, 15, 15);
+    drawString("Name: " + otherNames[0], 10, 375);
+    drawString("Cards: " + (hands[0].length() - 1), 10, 395);
+    drawImage(im.getPointer(1), 68, 380);
+    
+    // tableposition is already scaled
     if (hands[0].getFaceUp(0) != null) hands[0].getFaceUp(0).drawSideWays(tableposition[0][0]);
     else if (hands[0].getFaceDown(0) != null)
       g.drawImage(backSW, (int) tableposition[0][0].getX(), (int) tableposition[0][0].getY(), sh);
@@ -406,10 +426,10 @@ class Dealer {
     else if (hands[0].getFaceDown(2) != null)
       g.drawImage(backSW, (int) tableposition[0][2].getX(), (int) tableposition[0][2].getY(), sh);
 
-    g.drawRoundRect(8, 8, 135, 60, 23, 23);
-    g.drawString("Name: " + otherNames[1], 15, 30);
-    g.drawString("Cards: " + (hands[1].length() - 1), 15, 60);
-    g.drawImage(im.getPointer(2), 105, 38, sh);
+      drawRoundRect(5, 5, 90, 40, 15, 15);
+      drawString("Name: " + otherNames[1], 10, 20);
+      drawString("Cards: " + (hands[1].length() - 1), 10, 40);
+      drawImage(im.getPointer(2), 70, 25);      
 
     if (hands[1].getFaceUp(0) != null) hands[1].getFaceUp(0).drawCard(tableposition[1][0]);
     else if (hands[1].getFaceDown(0) != null)
@@ -421,10 +441,11 @@ class Dealer {
     else if (hands[1].getFaceDown(2) != null)
       g.drawImage(back, (int) tableposition[1][2].getX(), (int) tableposition[1][2].getY(), sh);
 
-    g.drawRoundRect(533, 540, 130, 60, 23, 23);
-    g.drawString("Name: " + otherNames[2], 540, 563); // 365
-    g.drawString("Cards: " + (hands[2].length() - 1), 540, 593); // 365
-    g.drawImage(im.getPointer(1), 635, 570, sh);
+      drawRoundRect(355, 360, 90, 40, 15, 15);
+      drawString("Name: " + otherNames[2], 360, 375); // 365
+      drawString("Cards: " + (hands[2].length() - 1), 360, 395); // 365
+      drawImage(im.getPointer(1), 423, 380);
+
     if (hands[2].getFaceUp(0) != null) hands[2].getFaceUp(0).drawSideWays(tableposition[2][0]);
     else if (hands[2].getFaceDown(0) != null)
       g.drawImage(backSW, (int) tableposition[2][0].getX(), (int) tableposition[2][0].getY(), sh);
@@ -476,7 +497,7 @@ class Dealer {
       }
     } else if (burnt) {
       // TODO scale up image by 1.5x
-      g.drawImage(im.getBurnt(), 195, 285, sh);
+      drawImage(im.getBurnt(), 130, 190);
       burnt = false;
     }
     g.drawImage(

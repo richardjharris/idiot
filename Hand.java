@@ -28,13 +28,14 @@ public class Hand {
     this.sh = sh;
     this.back = back;
     this.g = g;
-    ontable[0] = new Point((int)(103*1.5), (int)(350*1.5));
-    ontable[1] = new Point((int)(188*1.5), (int)(350*1.5));
-    ontable[2] = new Point((int)(276*1.5), (int)(350*1.5));
 
-    tableBox[0] = new Rectangle((int)(103*1.5), (int)(350*1.5), (int)(71*1.5), (int)(96*1.5));
-    tableBox[1] = new Rectangle((int)(188*1.5), (int)(350*1.5), (int)(71*1.5), (int)(96*1.5));
-    tableBox[2] = new Rectangle((int)(276*1.5), (int)(350*1.5), (int)(71*1.5), (int)(96*1.5));
+    ontable[0] = new Point(sh.scale(103), sh.scale(350));
+    ontable[1] = new Point(sh.scale(188), sh.scale(350));
+    ontable[2] = new Point(sh.scale(276), sh.scale(350));
+
+    tableBox[0] = new Rectangle(sh.scale(103), sh.scale(350), sh.scale(71), sh.scale(96));
+    tableBox[1] = new Rectangle(sh.scale(188), sh.scale(350), sh.scale(71), sh.scale(96));
+    tableBox[2] = new Rectangle(sh.scale(276), sh.scale(350), sh.scale(71), sh.scale(96));
   }
 
   public Hand() {}
@@ -113,7 +114,7 @@ public class Hand {
         y = 515;
       }
 
-      hand[n].drawCard2((int)(x * 1.5), (int)(y * 1.5));
+      hand[n].drawCard2(sh.scale(x), sh.scale(y));
 
       // creating cardBox
 
@@ -137,7 +138,7 @@ public class Hand {
       if (width > 71) width = 71;
       if (n + 2 == cardCount || n == 21 || n == 42) width = 71;
 
-      cardBox[n] = new Rectangle((int)(x * 1.5), (int)(y * 1.5), (int)(width * 1.5), (int)(height * 1.5));
+      cardBox[n] = new Rectangle(sh.scale(x), sh.scale(y), sh.scale(width), sh.scale(height));
     }
 
     for (int n = 0; n < 3; n++)

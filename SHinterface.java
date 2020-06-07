@@ -59,6 +59,9 @@ class SHinterface extends JFrame
   BufferedImage offscreen;
   ImageIcon imageI;
 
+  // Scale factor for all drawing and input routines
+  double scaleFactor = 1.5;
+
   boolean player1 = false; // is 1 player game running
   boolean player2 = false; // is 2 player game running
 
@@ -86,6 +89,10 @@ class SHinterface extends JFrame
 
   ImageManager imageManager;
 
+  int scale(int number) {
+    return (int)(number * scaleFactor);
+  }
+
   SHinterface() {
     try {
       imageManager = new ImageManager(this);
@@ -93,11 +100,12 @@ class SHinterface extends JFrame
       msg.setText("Load Error " + e);
     }
 
-    offscreen = new BufferedImage(675, 825, BufferedImage.TYPE_3BYTE_BGR);
+    offscreen = new BufferedImage(scale(450), scale(550), BufferedImage.TYPE_3BYTE_BGR);
     g = offscreen.getGraphics();
+    // TODO scale this properly (assumes 1.5 atm)
     g.drawImage(imageManager.getTitle(), 75, 250, this);
     g.setColor(Color.white);
-    g.drawLine(0, 675, 675, 675);
+    g.drawLine(0, scale(450), scale(450), scale(450));
 
     hand = new Hand(this, imageManager.getCardBack(), g);
 
