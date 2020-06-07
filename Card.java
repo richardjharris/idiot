@@ -17,10 +17,6 @@ public class Card {
   // Original card number from 0-51.
   int cardNumber;
 
-  // TODO move to ImageManager.
-  BufferedImage cardPic;
-  BufferedImage cardSideWays;
-
   // TODO move routines to SHinterface.
   SHinterface sh;
   Graphics g;
@@ -42,9 +38,14 @@ public class Card {
 
     cardSuit = getCardSuit(cardNumber);
     cardValue = getCardValue(cardNumber, cardSuit);
+  }
 
-    cardPic = sh.getImageManager().getCardFront(cardSuit, cardValue);
-    cardSideWays = sh.getImageManager().getCardFrontSideways(cardSuit, cardValue);
+  private BufferedImage cardPic() {
+    return sh.getImageManager().getCardFront(cardSuit, cardValue);
+  }
+
+  private BufferedImage cardSideways() {
+    return sh.getImageManager().getCardFrontSideways(cardSuit, cardValue);
   }
 
   public void drawCard(Point p, boolean sideways) {
@@ -58,19 +59,19 @@ public class Card {
   }
 
   public void drawCard(Point p) {
-    g.drawImage(cardPic, (int) p.getX(), (int) p.getY(), sh);
+    g.drawImage(cardPic(), (int) p.getX(), (int) p.getY(), sh);
   }
 
   public void drawCard(int x, int y) {
-    g.drawImage(cardPic, x, y, sh);
+    g.drawImage(cardPic(), x, y, sh);
   }
 
   public void drawSideways(Point p) {
-    g.drawImage(cardSideWays, (int) p.getX(), (int) p.getY(), sh);
+    g.drawImage(cardSideways(), (int) p.getX(), (int) p.getY(), sh);
   }
 
   public void drawSideways(int x, int y) {
-    g.drawImage(cardSideWays, x, y, sh);
+    g.drawImage(cardSideways(), x, y, sh);
   }
 
   public int getSuit() {
