@@ -151,7 +151,7 @@ public class ImageManager {
     int width = src.getWidth();
     int height = src.getHeight();
     // Color card images get given type = 0, which would cause an exception
-    int type = src.getType() != 0 ? src.getType() : 5;
+    int type = src.getType() != 0 ? src.getType() : 6;
 
     BufferedImage dest = new BufferedImage(height, width, type);
 
@@ -174,7 +174,7 @@ public class ImageManager {
   // Resize an image to the specified width/height. Uses a special algorithm
   // optimised for down-scaling.
   static BufferedImage resize(BufferedImage src, int newWidth, int newHeight) {
-    int type = src.getType() != 0 ? src.getType() : 5;
+    int type = src.getType() != 0 ? src.getType() : 6;
     BufferedImage dest = new BufferedImage(newWidth, newHeight, type);
     progressiveResize(src, dest);
     return dest;
