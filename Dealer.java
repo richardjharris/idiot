@@ -29,8 +29,6 @@ class Dealer extends PlayerBase {
 
   int socketCount = 0;
 
-  int whosturn = 2;
-
   Card deck[] = new Card[52];
   Hand hands[] = new Hand[4];
   Card pile[] = new Card[52];
@@ -53,11 +51,12 @@ class Dealer extends PlayerBase {
       boolean nine,
       boolean swap,
       Score score) {
-      super(sh, g, score);
+    super(sh, g, score);
     this.fastgame = fastgame;
     this.seven = seven;
     this.nine = nine;
     this.swap = swap;
+    this.whosturn = 2;
 
     score.imDealer(this);
 
@@ -327,100 +326,12 @@ class Dealer extends PlayerBase {
     return hands[playerNo].length() - 1;
   }
 
-  public void displayTable() {
-    ImageManager im = sh.getImageManager();
-    BufferedImage back = im.getCardBack();
-    BufferedImage backSW = im.getCardBackSideways();
+  protected Card getFaceUpCard(int playerNo, int cardIndex) {
+    return hands[playerNo].getFaceUp(cardIndex);
+  }
 
-    drawPlayAreaBackground();
-    drawCornerBoxes();
-    ownHand().showHand();
-
-    // tableposition is already scaled
-    if (hands[0].getFaceUp(0) != null) hands[0].getFaceUp(0).drawSideWays(tableposition[0][0]);
-    else if (hands[0].getFaceDown(0) != null)
-      g.drawImage(backSW, (int) tableposition[0][0].getX(), (int) tableposition[0][0].getY(), sh);
-    if (hands[0].getFaceUp(1) != null) hands[0].getFaceUp(1).drawSideWays(tableposition[0][1]);
-    else if (hands[0].getFaceDown(1) != null)
-      g.drawImage(backSW, (int) tableposition[0][1].getX(), (int) tableposition[0][1].getY(), sh);
-    if (hands[0].getFaceUp(2) != null) hands[0].getFaceUp(2).drawSideWays(tableposition[0][2]);
-    else if (hands[0].getFaceDown(2) != null)
-      g.drawImage(backSW, (int) tableposition[0][2].getX(), (int) tableposition[0][2].getY(), sh);
-
-    if (hands[1].getFaceUp(0) != null) hands[1].getFaceUp(0).drawCard(tableposition[1][0]);
-    else if (hands[1].getFaceDown(0) != null)
-      g.drawImage(back, (int) tableposition[1][0].getX(), (int) tableposition[1][0].getY(), sh);
-    if (hands[1].getFaceUp(1) != null) hands[1].getFaceUp(1).drawCard(tableposition[1][1]);
-    else if (hands[1].getFaceDown(1) != null)
-      g.drawImage(back, (int) tableposition[1][1].getX(), (int) tableposition[1][1].getY(), sh);
-    if (hands[1].getFaceUp(2) != null) hands[1].getFaceUp(2).drawCard(tableposition[1][2]);
-    else if (hands[1].getFaceDown(2) != null)
-      g.drawImage(back, (int) tableposition[1][2].getX(), (int) tableposition[1][2].getY(), sh);
-
-    if (hands[2].getFaceUp(0) != null) hands[2].getFaceUp(0).drawSideWays(tableposition[2][0]);
-    else if (hands[2].getFaceDown(0) != null)
-      g.drawImage(backSW, (int) tableposition[2][0].getX(), (int) tableposition[2][0].getY(), sh);
-    if (hands[2].getFaceUp(1) != null) hands[2].getFaceUp(1).drawSideWays(tableposition[2][1]);
-    else if (hands[2].getFaceDown(1) != null)
-      g.drawImage(backSW, (int) tableposition[2][1].getX(), (int) tableposition[2][1].getY(), sh);
-    if (hands[2].getFaceUp(2) != null) hands[2].getFaceUp(2).drawSideWays(tableposition[2][2]);
-    else if (hands[2].getFaceDown(2) != null)
-      g.drawImage(backSW, (int) tableposition[2][2].getX(), (int) tableposition[2][2].getY(), sh);
-
-    // drawing pile
-    if (pile[0] != null) {
-      // determining how many cards of the same value are ontop of each other
-      int top = 0;
-      if (nine == true && pile[0].getValue() == 9) {
-        top = 1;
-        if (pile[1] != null)
-          if (pile[1].getValue() == 9) {
-            top = 2;
-            if (pile[2] != null) if (pile[2].getValue() == 9) top = 3;
-          }
-      }
-      int samecount = 1;
-      for (int n = top + 1; n < top + 4; n++) {
-        if (pile[n] == null) break;
-        if (pile[n].getValue() == pile[top].getValue()) samecount++;
-        else break;
-      }
-      if (samecount == 1) { // one of a kind
-        if (pile[top] != null) pile[top].drawCard(centre1);
-      } else if (samecount == 2) { // 2 of a kind
-        pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY() - 10);
-        pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 10);
-      } else if (samecount >= 3) { // 3 of a kind
-        pile[top + 2].drawCard((int) centre1.getX(), (int) centre1.getY() - 20);
-        pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY());
-        pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 20);
-      }
-      if (nine == true && pile[0].getValue() == 9)
-        if (top == 1) // one nine
-        pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-      if (top == 2) { // 2 nines
-        pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-        pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
-      }
-      if (top == 3) { // 3 nines
-        pile[2].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-        pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
-        pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 60);
-      }
-    } else if (burnt) {
-      // TODO duplicate code
-      BufferedImage burnBang = im.getBurnt();
-      // Draw in centre of play area
-      Point xy = sh.getCoordsForCentredImage(burnBang);
-      g.drawImage(burnBang, xy.x, xy.y, sh);
-      burnt = false;
-    }
-    g.drawImage(
-        im.getPointer(whosturn),
-        (int) pointerpoints[whosturn].getX(),
-        (int) pointerpoints[whosturn].getY(),
-        sh);
-    sh.repaint();
+  protected boolean hasFaceDownCard(int playerNo, int cardIndex) {
+    return hands[playerNo].getFaceDown(cardIndex) != null;
   }
 
   public void redeal() {

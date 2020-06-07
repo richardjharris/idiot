@@ -33,6 +33,16 @@ public class Card {
     cardSideWays = sh.getImageManager().getCardFrontSideways(cardSuit, cardValue);
   }
 
+  public void drawCard(Point p, boolean sideways) {
+    if (sideways) drawSideways(p);
+    else drawCard(p);
+  }
+
+  public void drawCard(int x, int y, boolean sideways) {
+    if (sideways) drawSideways(x, y);
+    else drawCard(x, y);
+  }
+
   public void drawCard(Point p) {
     g.drawImage(cardPic, (int) p.getX(), (int) p.getY(), sh);
   }
@@ -41,7 +51,7 @@ public class Card {
     g.drawImage(cardPic, x, y, sh);
   }
 
-  public void drawSideWays(Point p) {
+  public void drawSideways(Point p) {
     g.drawImage(cardSideWays, (int) p.getX(), (int) p.getY(), sh);
   }
 

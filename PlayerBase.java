@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 
 /**
  * Class that holds code common to both the Dealer (game host) and Player (other
@@ -46,6 +47,7 @@ abstract public class PlayerBase {
   // Details of other players
   String otherNames[] = new String[3];
   boolean outofgame[] = { false, false, false, false };
+  int whosturn;
 
   // For drawing the screen
   Point tableposition[][] = new Point[3][3];
@@ -69,6 +71,16 @@ abstract public class PlayerBase {
   abstract protected int deckLength();
 
   abstract protected int handLength(int playerNo);
+
+  // Get the face up card for the given player
+  abstract protected Card getFaceUpCard(int playerNo, int index);
+
+  // Returns true if the given face-down card still remains
+  abstract protected boolean hasFaceDownCard(int playerNo, int index);
+
+  protected ImageManager getImageManager() {
+    return sh.getImageManager();
+  }
 
   // Utilities
   protected boolean fourOfAKind(Card card) {
@@ -116,6 +128,32 @@ abstract public class PlayerBase {
     pointerpoints[3] = sh.point(220, 330);
   }
 
+  public void displayTable() {
+    drawPlayAreaBackground();
+    drawCornerBoxes();
+    ownHand().showHand();
+
+    drawOtherPlayerCards();
+
+    String pileStr = "";
+    for (int i = 0; i < 52; i++) {
+      if (pile[i] == null) break;
+      pileStr += Card.getCardStringValue(pile[i].cardNumber);
+    }
+    System.out.println("Pile: " + pileStr);
+
+    if (pile[0] != null) {
+      drawPile();
+    } else if (burnt) {
+      drawBurnt();
+      burnt = false;
+    }
+
+    drawTurnMarker();
+
+    sh.repaint();
+  }
+
   // Clear play area
   // Always call setColor before any drawing routines. If you want to change
   // anything else in Graphics, make a clone.
@@ -128,7 +166,7 @@ abstract public class PlayerBase {
 
   // Draw deck count, player name and cards
   protected void drawCornerBoxes() {
-    ImageManager im = sh.getImageManager();
+    ImageManager im = getImageManager();
 
     g.setColor(Color.red);
     drawRoundRect(355, 5, 90, 40, 15, 15);
@@ -150,6 +188,82 @@ abstract public class PlayerBase {
     drawString("Name: " + otherNames[2], 360, 375);
     drawString("Cards: " + handLength(2), 360, 395);
     drawImage(im.getPointer(1), 423, 380);
+  }
+
+  // Draw cards for other players
+  protected void drawOtherPlayerCards() {
+    BufferedImage back = getImageManager().getCardBack();
+    BufferedImage backSW = getImageManager().getCardBackSideways();
+
+    // Draw cards in central pool
+    for (int player = 0; player <= 2; player++) {
+      // Top player (1) is normal, others are sideways
+      boolean sideways = player != 1;
+      for (int card = 0; card <= 2; card++) {
+        Card faceUpCard = getFaceUpCard(player, card);
+        if (faceUpCard != null) {
+          faceUpCard.drawCard(tableposition[player][card], sideways);
+        } else if (hasFaceDownCard(player, card)) {
+          g.drawImage(sideways ? backSW : back, (int) tableposition[player][card].getX(), (int) tableposition[player][card].getY(), sh);
+        }
+      }
+    }
+  }
+
+  protected void drawTurnMarker() {
+    g.drawImage(
+        sh.getImageManager().getPointer(whosturn),
+        (int) pointerpoints[whosturn].getX(),
+        (int) pointerpoints[whosturn].getY(),
+        sh);
+  }
+
+  protected void drawBurnt() {
+    BufferedImage burnBang = sh.getImageManager().getBurnt();
+    // Draw in centre of play area
+    Point xy = sh.getCoordsForCentredImage(burnBang);
+    g.drawImage(burnBang, xy.x, xy.y, sh);
+  }
+
+  protected void drawPile() {
+    // determining how many cards of the same value are ontop of each other
+    int top = 0;
+    if (nine == true && pile[0].getValue() == 9) {
+      top = 1;
+      if (pile[1] != null)
+        if (pile[1].getValue() == 9) {
+          top = 2;
+          if (pile[2] != null) if (pile[2].getValue() == 9) top = 3;
+        }
+    }
+    int samecount = 1;
+    for (int n = top + 1; n < top + 4; n++) {
+      if (pile[n] == null) break;
+      if (pile[n].getValue() == pile[top].getValue()) samecount++;
+      else break;
+    }
+    if (samecount == 1) { // one of a kind
+      if (pile[top] != null) pile[top].drawCard(centre1);
+    } else if (samecount == 2) { // 2 of a kind
+      pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY() - 10);
+      pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 10);
+    } else if (samecount >= 3) { // 3 of a kind
+      pile[top + 2].drawCard((int) centre1.getX(), (int) centre1.getY() - 20);
+      pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY());
+      pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 20);
+    }
+    if (nine == true && pile[0].getValue() == 9)
+      if (top == 1) // one nine
+      pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
+    if (top == 2) { // 2 nines
+      pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
+      pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
+    }
+    if (top == 3) { // 3 nines
+      pile[2].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
+      pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
+      pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 60);
+    }
   }
 
   // Scaling routines

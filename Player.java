@@ -29,11 +29,10 @@ class Player extends PlayerBase {
   // for whos turn indicator
   String servername;
 
-  int whosturn = 0;
-
   Player(SHinterface sh, Graphics g, Hand hand, Score score) {
     super(sh, g, score);
     this.hand = hand;
+    this.whosturn = 0;
   }
 
   public Hand ownHand() {
@@ -136,98 +135,13 @@ class Player extends PlayerBase {
     return cardcount[playerNo];
   }
 
-  public void displayTable() {
-    ImageManager im = sh.getImageManager();
-    BufferedImage back = im.getCardBack();
-    BufferedImage backSW = im.getCardBackSideways();
+  protected Card getFaceUpCard(int playerNo, int cardIndex) {
+    return faceup[playerNo][cardIndex];
+  }
 
-    drawPlayAreaBackground();
-    drawCornerBoxes();
-    ownHand().showHand();
-
-    if (faceup[0][0] != null) faceup[0][0].drawSideWays(tableposition[0][0]);
-    else if (carddowncount[0] >= 3)
-      g.drawImage(backSW, (int) tableposition[0][0].getX(), (int) tableposition[0][0].getY(), sh);
-    if (faceup[0][1] != null) faceup[0][1].drawSideWays(tableposition[0][1]);
-    else if (carddowncount[0] >= 2)
-      g.drawImage(backSW, (int) tableposition[0][1].getX(), (int) tableposition[0][1].getY(), sh);
-    if (faceup[0][2] != null) faceup[0][2].drawSideWays(tableposition[0][2]);
-    else if (carddowncount[0] >= 1)
-      g.drawImage(backSW, (int) tableposition[0][2].getX(), (int) tableposition[0][2].getY(), sh);
-
-    if (faceup[1][0] != null) faceup[1][0].drawCard(tableposition[1][0]);
-    else if (carddowncount[1] >= 3)
-      g.drawImage(back, (int) tableposition[1][0].getX(), (int) tableposition[1][0].getY(), sh);
-    if (faceup[1][1] != null) faceup[1][1].drawCard(tableposition[1][1]);
-    else if (carddowncount[1] >= 2)
-      g.drawImage(back, (int) tableposition[1][1].getX(), (int) tableposition[1][1].getY(), sh);
-    if (faceup[1][2] != null) faceup[1][2].drawCard(tableposition[1][2]);
-    else if (carddowncount[1] >= 1)
-      g.drawImage(back, (int) tableposition[1][2].getX(), (int) tableposition[1][2].getY(), sh);
-
-    if (faceup[2][0] != null) faceup[2][0].drawSideWays(tableposition[2][0]);
-    else if (carddowncount[2] >= 3)
-      g.drawImage(backSW, (int) tableposition[2][0].getX(), (int) tableposition[2][0].getY(), sh);
-    if (faceup[2][1] != null) faceup[2][1].drawSideWays(tableposition[2][1]);
-    else if (carddowncount[2] >= 2)
-      g.drawImage(backSW, (int) tableposition[2][1].getX(), (int) tableposition[2][1].getY(), sh);
-    if (faceup[2][2] != null) faceup[2][2].drawSideWays(tableposition[2][2]);
-    else if (carddowncount[2] >= 1)
-      g.drawImage(backSW, (int) tableposition[2][2].getX(), (int) tableposition[2][2].getY(), sh);
-
-    // drawing pile
-    if (pile[0] != null) {
-      // determining how many cards of the same value are ontop of each other
-      int top = 0;
-      if (nine == true && pile[0].getValue() == 9) {
-        top = 1;
-        if (pile[1] != null)
-          if (pile[1].getValue() == 9) {
-            top = 2;
-            if (pile[2] != null) if (pile[2].getValue() == 9) top = 3;
-          }
-      }
-      int samecount = 1;
-      for (int n = top + 1; n < top + 4; n++) {
-        if (pile[n] == null) break;
-        if (pile[n].getValue() == pile[top].getValue()) samecount++;
-        else break;
-      }
-      if (samecount == 1) { // one of a kind
-        if (pile[top] != null) pile[top].drawCard(centre1);
-      } else if (samecount == 2) { // 2 of a kind
-        pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY() - 10);
-        pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 10);
-      } else if (samecount >= 3) { // 3 of a kind
-        pile[top + 2].drawCard((int) centre1.getX(), (int) centre1.getY() - 20);
-        pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY());
-        pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 20);
-      }
-      if (nine == true && pile[0].getValue() == 9)
-        if (top == 1) // one nine
-        pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-      if (top == 2) { // 2 nines
-        pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-        pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
-      }
-      if (top == 3) { // 3 nines
-        pile[2].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-        pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
-        pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 60);
-      }
-    } else if (burnt) {
-      BufferedImage burnBang = im.getBurnt();
-      // Draw in centre of play area. Coords are already scaled
-      Point xy = sh.getCoordsForCentredImage(burnBang);
-      g.drawImage(burnBang, xy.x, xy.y, sh);
-      burnt = false;
-    }
-    g.drawImage(
-        im.getPointer(whosturn),
-        (int) pointerpoints[whosturn].getX(),
-        (int) pointerpoints[whosturn].getY(),
-        sh);
-    sh.repaint();
+  protected boolean hasFaceDownCard(int playerNo, int cardIndex) {
+    // Clients don't track which particular cards were used, only the count.
+    return carddowncount[playerNo] >= (3 - cardIndex);
   }
 
   public void cardSelection(int cardno) {
