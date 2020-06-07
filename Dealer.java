@@ -69,6 +69,12 @@ class Dealer {
 
   int gameID = 1; // Stops AI playing a move in wrong game
 
+  private final String[] aiNames = {
+    "Dan",
+    "Greg",
+    "Nick",
+  };
+
   Dealer(
       SHinterface sh,
       Graphics g,
@@ -131,7 +137,7 @@ class Dealer {
     this.playersName = playersName;
     score.addName(playersName);
     for (int n = 0; n < 3; n++) {
-      otherNames[n] = "AI-" + (n + 1);
+      otherNames[n] = aiNames[n];
       score.addName(otherNames[n]);
       aiPlayer[n] = true;
       socketCount++;
