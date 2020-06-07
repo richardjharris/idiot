@@ -29,14 +29,14 @@ public class Hand {
     this.back = back;
     this.g = g;
 
-    ontable[0] = new Point(sh.scale(103), sh.scale(350));
-    ontable[1] = new Point(sh.scale(188), sh.scale(350));
-    ontable[2] = new Point(sh.scale(276), sh.scale(350));
+    ontable[0] = sh.point(103, 350);
+    ontable[1] = sh.point(188, 350);
+    ontable[2] = sh.point(276, 350);
 
-    tableBox[0] = new Rectangle(sh.scale(103), sh.scale(350), sh.scale(71), sh.scale(96));
-    tableBox[1] = new Rectangle(sh.scale(188), sh.scale(350), sh.scale(71), sh.scale(96));
-    tableBox[2] = new Rectangle(sh.scale(276), sh.scale(350), sh.scale(71), sh.scale(96));
-  }
+    tableBox[0] = sh.rect(103, 350, 71, 96);
+    tableBox[1] = sh.rect(188, 350, 71, 96);
+    tableBox[2] = sh.rect(276, 350, 71, 96);
+ }
 
   public Hand() {}
 

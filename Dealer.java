@@ -107,25 +107,24 @@ class Dealer {
       aiPlayer[n] = false;
     }
 
-    // TODO scale?
-    tableposition[0][0] = new Point(0, 103);
-    tableposition[0][1] = new Point(0, 188);
-    tableposition[0][2] = new Point(0, 276);
+    tableposition[0][0] = sh.point(0, 103);
+    tableposition[0][1] = sh.point(0, 188);
+    tableposition[0][2] = sh.point(0, 276);
 
-    tableposition[1][0] = new Point(103, 0);
-    tableposition[1][1] = new Point(188, 0);
-    tableposition[1][2] = new Point(276, 0);
+    tableposition[1][0] = sh.point(103, 0);
+    tableposition[1][1] = sh.point(188, 0);
+    tableposition[1][2] = sh.point(276, 0);
 
-    tableposition[2][0] = new Point(354, 103);
-    tableposition[2][1] = new Point(354, 188);
-    tableposition[2][2] = new Point(354, 276);
+    tableposition[2][0] = sh.point(354, 103);
+    tableposition[2][1] = sh.point(354, 188);
+    tableposition[2][2] = sh.point(354, 276);
 
-    centre1 = new Point(188, 175);
+    centre1 = sh.point(188, 175);
 
-    pointerpoints[0] = new Point(115, 220);
-    pointerpoints[1] = new Point(220, 110);
-    pointerpoints[2] = new Point(330, 220);
-    pointerpoints[3] = new Point(220, 330);
+    pointerpoints[0] = sh.point(115, 220);
+    pointerpoints[1] = sh.point(220, 110);
+    pointerpoints[2] = sh.point(330, 220);
+    pointerpoints[3] = sh.point(220, 330);
   }
 
   public void onePlayer(String playersName) {

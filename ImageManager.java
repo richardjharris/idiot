@@ -1,6 +1,9 @@
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.MediaTracker;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -127,18 +130,98 @@ public class ImageManager {
     return dest;
   }
 
-  // Resize image to a new width and height.
   static BufferedImage resize(BufferedImage src, int newWidth, int newHeight) {
-    // Force a new type to ensure we don't get pixelated scaling.
-    BufferedImage dest = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-
-    Graphics2D graphics2D = dest.createGraphics();
-    graphics2D.setRenderingHint(
-        RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-    graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    graphics2D.drawImage(src, 0, 0, newWidth, newHeight, null);
-    graphics2D.dispose();
-
+    BufferedImage dest = new BufferedImage(newWidth, newHeight, src.getType());
+    progressiveResize(src, dest);
     return dest;
   }
+
+  static private Graphics2D createGraphics(BufferedImage img) {
+    Graphics2D g = img.createGraphics();
+    g.setRenderingHint(
+      RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		return g;  
+  }
+
+	// Progressive resizer, stolen from Thumbnailator library.
+	static public void progressiveResize(BufferedImage srcImage, BufferedImage destImage)
+			throws NullPointerException
+	{		
+		int currentWidth = srcImage.getWidth();
+		int currentHeight = srcImage.getHeight();
+		
+		final int targetWidth = destImage.getWidth();
+		final int targetHeight = destImage.getHeight();
+		
+		// If multi-step downscaling is not required, perform one-step.
+		if ((targetWidth * 2 >= currentWidth) && (targetHeight * 2 >= currentHeight))
+		{
+			Graphics2D g = createGraphics(destImage);
+			g.drawImage(srcImage, 0, 0, targetWidth, targetHeight, null);
+			g.dispose();
+			return;
+		}
+		
+		// Temporary image used for in-place resizing of image.
+		BufferedImage tempImage = new BufferedImage(
+				currentWidth,
+				currentHeight,
+				destImage.getType()
+		);
+		
+		Graphics2D g = createGraphics(tempImage);
+		g.setComposite(AlphaComposite.Src);
+		
+		/*
+		 * Determine the size of the first resize step should be.
+		 * 1) Beginning from the target size
+		 * 2) Increase each dimension by 2
+		 * 3) Until reaching the original size
+		 */
+		int startWidth = targetWidth;
+		int startHeight = targetHeight;
+		
+		while (startWidth < currentWidth && startHeight < currentHeight)
+		{
+			startWidth *= 2;
+			startHeight *= 2;
+		}
+		
+		currentWidth = startWidth / 2;
+		currentHeight = startHeight / 2;
+
+		// Perform first resize step.
+		g.drawImage(srcImage, 0, 0, currentWidth, currentHeight, null);
+		
+		// Perform an in-place progressive bilinear resize.
+		while (	(currentWidth >= targetWidth * 2) && (currentHeight >= targetHeight * 2) )
+		{
+			currentWidth /= 2;
+			currentHeight /= 2;
+			
+			if (currentWidth < targetWidth)
+			{
+				currentWidth = targetWidth;
+			}
+			if (currentHeight < targetHeight)
+			{
+				currentHeight = targetHeight;
+			}
+			
+			g.drawImage(
+					tempImage,
+					0, 0, currentWidth, currentHeight,
+					0, 0, currentWidth * 2, currentHeight * 2,
+					null
+			);
+		}
+		
+		g.dispose();
+		
+		// Draw the resized image onto the destination image.
+		Graphics2D destg = createGraphics(destImage);
+		destg.drawImage(tempImage, 0, 0, targetWidth, targetHeight, 0, 0, currentWidth, currentHeight, null);
+		destg.dispose();
+	}
 }

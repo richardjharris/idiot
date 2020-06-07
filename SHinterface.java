@@ -6,6 +6,12 @@ import java.awt.image.*;
 import java.io.IOException;
 import javax.swing.*;
 
+// TODO(release) burnt image needs offset
+// TODO(release) Dialogs (e.g. MultiCardD) should appear in the center
+// TODO Set scaling based on resolution
+// TODO(release) image scaling is bad
+// TODO graphical way of indicating hand sizes
+
 /*-------------------------------
  This is a Shithead(card game) Program
 
@@ -93,6 +99,14 @@ class SHinterface extends JFrame
     return (int) (number * scaleFactor);
   }
 
+  Point point(int x, int y) {
+    return new Point(scale(x), scale(y));
+  }
+
+  Rectangle rect(int arg0, int arg1, int arg2, int arg3) {
+    return new Rectangle(scale(arg0), scale(arg1), scale(arg2), scale(arg3));
+  }
+
   SHinterface() {
     try {
       imageManager = new ImageManager(this);
@@ -126,6 +140,7 @@ class SHinterface extends JFrame
     msg.setLineWrap(true);
     msg.setEditable(false);
     msg.setDisabledTextColor(Color.black);
+    msg.setWrapStyleWord(true);
 
     input = new JTextField();
     input.addActionListener(this);
