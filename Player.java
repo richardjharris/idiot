@@ -190,6 +190,23 @@ class Player {
     }
   }
 
+  // TODO copied from Dealer for now
+  private void drawRoundRect(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+    g.drawRoundRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3), sh.scale(arg4), sh.scale(arg5));
+  }
+  private void drawLine(int arg0, int arg1, int arg2, int arg3) {
+    g.drawLine(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
+  }
+  private void fillRect(int arg0, int arg1, int arg2, int arg3) {
+    g.fillRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
+  }
+  private void drawString(String s, int x, int y) {
+    g.drawString(s, sh.scale(x), sh.scale(y));
+  }
+  private void drawImage(Image i, int x, int y) {
+    g.drawImage(i, sh.scale(x), sh.scale(y), sh);
+  }
+
   // TODO this looks like a copy of Dealer's method.
   public void displayTable() {
     ImageManager im = sh.getImageManager();
@@ -197,20 +214,20 @@ class Player {
     BufferedImage backSW = im.getCardBackSideways();
 
     g.setColor(Color.black);
-    g.fillRect(0, 0, 450, 550);
+    fillRect(0, 0, 450, 550);
     g.setColor(Color.white);
-    g.drawLine(0, 450, 450, 450);
+    drawLine(0, 450, 450, 450);
     g.setColor(Color.red);
-    g.drawRoundRect(355, 5, 90, 40, 15, 15);
+    drawRoundRect(355, 5, 90, 40, 15, 15);
     g.setColor(Color.white);
-    g.drawString("Deck: " + deck, 365, 20);
-    g.drawString("Pile: " + pilelength(), 365, 40);
+    drawString("Deck: " + deck, 365, 20);
+    drawString("Pile: " + pilelength(), 365, 40);
     hand.showHand();
 
-    g.drawRoundRect(5, 360, 90, 40, 15, 15);
-    g.drawString("Name: " + othernames[0], 10, 375);
-    g.drawString("Cards: " + cardcount[0], 10, 395);
-    g.drawImage(im.getPointer(1), 68, 380, sh);
+    drawRoundRect(5, 360, 90, 40, 15, 15);
+    drawString("Name: " + othernames[0], 10, 375);
+    drawString("Cards: " + cardcount[0], 10, 395);
+    drawImage(im.getPointer(1), 68, 380);
     if (faceup[0][0] != null) faceup[0][0].drawSideWays(tableposition[0][0]);
     else if (carddowncount[0] >= 3)
       g.drawImage(backSW, (int) tableposition[0][0].getX(), (int) tableposition[0][0].getY(), sh);
@@ -221,11 +238,12 @@ class Player {
     else if (carddowncount[0] >= 1)
       g.drawImage(backSW, (int) tableposition[0][2].getX(), (int) tableposition[0][2].getY(), sh);
 
-    g.drawRoundRect(5, 5, 90, 40, 15, 15);
-    g.drawString("Name: " + othernames[1], 10, 20);
-    g.drawString("Cards: " + cardcount[1], 10, 40);
-    g.drawImage(im.getPointer(2), 70, 25, sh);
+    drawRoundRect(5, 5, 90, 40, 15, 15);
+    drawString("Name: " + othernames[1], 10, 20);
+    drawString("Cards: " + cardcount[1], 10, 40);
+    drawImage(im.getPointer(2), 70, 25);
 
+    // TODO these need scaling
     if (faceup[1][0] != null) faceup[1][0].drawCard(tableposition[1][0]);
     else if (carddowncount[1] >= 3)
       g.drawImage(back, (int) tableposition[1][0].getX(), (int) tableposition[1][0].getY(), sh);
@@ -236,10 +254,10 @@ class Player {
     else if (carddowncount[1] >= 1)
       g.drawImage(back, (int) tableposition[1][2].getX(), (int) tableposition[1][2].getY(), sh);
 
-    g.drawRoundRect(355, 360, 90, 40, 15, 15);
-    g.drawString("Name: " + othernames[2], 360, 375);
-    g.drawString("Cards: " + cardcount[2], 360, 395);
-    g.drawImage(im.getPointer(1), 423, 380, sh);
+    drawRoundRect(355, 360, 90, 40, 15, 15);
+    drawString("Name: " + othernames[2], 360, 375);
+    drawString("Cards: " + cardcount[2], 360, 395);
+    drawImage(im.getPointer(1), 423, 380);
     if (faceup[2][0] != null) faceup[2][0].drawSideWays(tableposition[2][0]);
     else if (carddowncount[2] >= 3)
       g.drawImage(backSW, (int) tableposition[2][0].getX(), (int) tableposition[2][0].getY(), sh);
@@ -291,7 +309,8 @@ class Player {
         pile[0].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 60);
       }
     } else if (burnt) {
-      g.drawImage(im.getBurnt(), 130, 190, sh);
+      // TODO scale 1.5x
+      drawImage(im.getBurnt(), 130, 190);
       burnt = false;
     }
     g.drawImage(

@@ -21,8 +21,8 @@ public class ImageManager {
   private BufferedImage pointer[] = new BufferedImage[4];
   private BufferedImage cardBackSideways;
 
-  private static final int baseCardWidth = 101;
-  private static final int baseCardHeight = 149;
+  private static final int baseCardWidth = 73;
+  private static final int baseCardHeight = 99;
 
   private int cardWidth, cardHeight;
 
