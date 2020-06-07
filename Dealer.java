@@ -332,21 +332,9 @@ class Dealer extends PlayerBase {
     BufferedImage back = im.getCardBack();
     BufferedImage backSW = im.getCardBackSideways();
 
-    g.setColor(Color.black);
-    fillRect(0, 0, 450, 550);
-    g.setColor(Color.white);
-    drawLine(0, 450, 450, 450);
-    g.setColor(Color.red);
-    drawRoundRect(355, 5, 90, 40, 15, 15);
-    g.setColor(Color.white);
-    drawString("Deck: " + deckLength(), 365, 20);
-    drawString("Pile: " + pilelength(), 365, 40);
+    drawPlayAreaBackground();
+    drawCornerBoxes();
     ownHand().showHand();
-
-    drawRoundRect(5, 360, 90, 40, 15, 15);
-    drawString("Name: " + otherNames[0], 10, 375);
-    drawString("Cards: " + handLength(0), 10, 395);
-    drawImage(im.getPointer(1), 68, 380);
 
     // tableposition is already scaled
     if (hands[0].getFaceUp(0) != null) hands[0].getFaceUp(0).drawSideWays(tableposition[0][0]);
@@ -359,11 +347,6 @@ class Dealer extends PlayerBase {
     else if (hands[0].getFaceDown(2) != null)
       g.drawImage(backSW, (int) tableposition[0][2].getX(), (int) tableposition[0][2].getY(), sh);
 
-    drawRoundRect(5, 5, 90, 40, 15, 15);
-    drawString("Name: " + otherNames[1], 10, 20);
-    drawString("Cards: " + handLength(1), 10, 40);
-    drawImage(im.getPointer(2), 70, 25);
-
     if (hands[1].getFaceUp(0) != null) hands[1].getFaceUp(0).drawCard(tableposition[1][0]);
     else if (hands[1].getFaceDown(0) != null)
       g.drawImage(back, (int) tableposition[1][0].getX(), (int) tableposition[1][0].getY(), sh);
@@ -373,11 +356,6 @@ class Dealer extends PlayerBase {
     if (hands[1].getFaceUp(2) != null) hands[1].getFaceUp(2).drawCard(tableposition[1][2]);
     else if (hands[1].getFaceDown(2) != null)
       g.drawImage(back, (int) tableposition[1][2].getX(), (int) tableposition[1][2].getY(), sh);
-
-    drawRoundRect(355, 360, 90, 40, 15, 15);
-    drawString("Name: " + otherNames[2], 360, 375);
-    drawString("Cards: " + handLength(2), 360, 395);
-    drawImage(im.getPointer(1), 423, 380);
 
     if (hands[2].getFaceUp(0) != null) hands[2].getFaceUp(0).drawSideWays(tableposition[2][0]);
     else if (hands[2].getFaceDown(0) != null)

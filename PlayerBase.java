@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -30,7 +31,7 @@ abstract public class PlayerBase {
   Graphics g;
   SHinterface sh;
 
-  // cards in play pile
+  // cards in play pile: up to 52, terminated by 'null'
   Card pile[] = new Card[52];
   // deck, hands. etc are managed by the dealer only
 
@@ -113,6 +114,42 @@ abstract public class PlayerBase {
     pointerpoints[1] = sh.point(220, 110);
     pointerpoints[2] = sh.point(330, 220);
     pointerpoints[3] = sh.point(220, 330);
+  }
+
+  // Clear play area
+  // Always call setColor before any drawing routines. If you want to change
+  // anything else in Graphics, make a clone.
+  protected void drawPlayAreaBackground() {
+    g.setColor(Color.black);
+    fillRect(0, 0, 450, 550);
+    g.setColor(Color.white);
+    drawLine(0, 450, 450, 450);
+  }
+
+  // Draw deck count, player name and cards
+  protected void drawCornerBoxes() {
+    ImageManager im = sh.getImageManager();
+
+    g.setColor(Color.red);
+    drawRoundRect(355, 5, 90, 40, 15, 15);
+    g.setColor(Color.white);
+    drawString("Deck: " + deckLength(), 365, 20);
+    drawString("Pile: " + pilelength(), 365, 40);
+
+    drawRoundRect(5, 360, 90, 40, 15, 15);
+    drawString("Name: " + otherNames[0], 10, 375);
+    drawString("Cards: " + handLength(0), 10, 395);
+    drawImage(im.getPointer(1), 68, 380);
+
+    drawRoundRect(5, 5, 90, 40, 15, 15);
+    drawString("Name: " + otherNames[1], 10, 20);
+    drawString("Cards: " + handLength(1), 10, 40);
+    drawImage(im.getPointer(2), 70, 25);
+
+    drawRoundRect(355, 360, 90, 40, 15, 15);
+    drawString("Name: " + otherNames[2], 360, 375);
+    drawString("Cards: " + handLength(2), 360, 395);
+    drawImage(im.getPointer(1), 423, 380);
   }
 
   // Scaling routines
