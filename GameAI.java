@@ -20,7 +20,7 @@ public class GameAI {
     Card top;
     if (pile.isEmpty()) {
       return playlowest(hand, 15, null);
-    } else if (nine == true && pile.topValue() == 9) {
+    } else if (nine && pile.topValue() == 9) {
       int topcount = 0;
       // TODO rewrite this
       for (int i = 0; i < 52; i++) {
@@ -33,7 +33,7 @@ public class GameAI {
       top = pile.get(topcount);
     } else top = pile.top();
 
-    if (seven == true && top.getValue() == 7) {
+    if (seven && top.getValue() == 7) {
       return playlowest(hand, 6, top);
     } else { // normal play
       return playhigherthan(hand, top);
@@ -49,7 +49,7 @@ public class GameAI {
     if (hand.length() > 1) { // if cards in hand
       // determining which card to play
       for (int n = 0; n < hand.length() - 1; n++) {
-        if (nine == true && hand.getCard(n).getValue() == 9) {
+        if (nine && hand.getCard(n).getValue() == 9) {
           ninecount++;
         } else if (hand.getCard(n).getValue() == 10) {
           tencount++;
@@ -79,7 +79,7 @@ public class GameAI {
       // determining which card to play
       for (int n = 0; n < 3; n++) {
         if (hand.getFaceUp(n) != null) {
-          if (nine == true && hand.getFaceUp(n).getValue() == 9) {
+          if (nine && hand.getFaceUp(n).getValue() == 9) {
             ninecount++;
           } else if (hand.getFaceUp(n).getValue() == 10) {
             tencount++;
@@ -120,7 +120,7 @@ public class GameAI {
       // determining which card to play
       for (int n = 0; n < hand.length() - 1; n++) {
         // System.out.println("Card " + n + " = " + hand.getCard(n).getValue());
-        if (nine == true && hand.getCard(n).getValue() == 9) {
+        if (nine && hand.getCard(n).getValue() == 9) {
           ninecount++;
         } else if (hand.getCard(n).getValue() == 10) {
           tencount++;
@@ -151,7 +151,7 @@ public class GameAI {
       // determining which card to play
       for (int n = 0; n < 3; n++) {
         if (hand.getFaceUp(n) != null) {
-          if (nine == true && hand.getFaceUp(n).getValue() == 9) {
+          if (nine && hand.getFaceUp(n).getValue() == 9) {
             ninecount++;
           } else if (hand.getFaceUp(n).getValue() == 10) {
             tencount++;
@@ -217,7 +217,7 @@ public class GameAI {
         if (card == null) {
           command = "turn:facedown:" + hand.getFaceDown(n).getNumber() + ":";
           return command;
-        } else if (seven == true && card.getValue() == 7) {
+        } else if (seven && card.getValue() == 7) {
           if (hand.getFaceDown(n).getValue() < 7) {
             command = "turn:facedown:" + hand.getFaceDown(n).getNumber() + ":";
             return command;

@@ -341,9 +341,9 @@ class Dealer extends PlayerBase {
       for (int n = 0; n < 4; n++) {
         // setting scoreboard if game finishes early
         if (n < 3) {
-          if (outofgame[n] == false) score.addScore(otherNames[n], position);
+          if (!outofgame[n]) score.addScore(otherNames[n], position);
         } else {
-          if (outofgame[n] == false) score.addScore(playersName, position);
+          if (!outofgame[n]) score.addScore(playersName, position);
         }
 
         outofgame[n] = false;
@@ -642,7 +642,7 @@ class Dealer extends PlayerBase {
     } else if (card.getValue() == 10
         || pile.makesFourOfAKind(card)) { // pile is burn and its players turn again
       burnPile();
-      if (ownHand().isFaceDown() == true || ownHand().length() > 1) {
+      if (ownHand().isFaceDown() || ownHand().length() > 1) {
         for (int n = 0; n < 3; n++)
           if (ownHand().length() > 1) sendCommand(command + "burn:", n);
           else sendCommand(command + card.getNumber() + ":", n);
@@ -658,7 +658,7 @@ class Dealer extends PlayerBase {
     } else if (pile.isEmpty()) {
       cardAccepted(card, command);
       return true;
-    } else if (nine == true && card.getValue() == 9) {
+    } else if (nine && card.getValue() == 9) {
       cardAccepted(card, command);
       return true;
     }
@@ -812,10 +812,9 @@ class Dealer extends PlayerBase {
           if (hands[whosturn].getFaceDown(n) != null)
             if (hands[whosturn].getFaceDown(n).getNumber() == cardNo) {
               if (hands[whosturn].getFaceDown(n).getValue() == 10
-                  || pile.makesFourOfAKind(hands[whosturn].getFaceDown(n))
-                      == true) { // if card is 10 burning the deck
+                  || pile.makesFourOfAKind(hands[whosturn].getFaceDown(n))) { // if card is 10 burning the deck
                 burnPile();
-                if (hands[whosturn].isFaceDown() == true || hands[whosturn].length() > 1)
+                if (hands[whosturn].isFaceDown() || hands[whosturn].length() > 1)
                   burn = true;
                 sh.addMsg(otherNames[whosturn] + " burnt the pile");
               } else { // else adding card to pile
@@ -1038,7 +1037,7 @@ class Dealer extends PlayerBase {
         {
           for (int n = 0; n < 3; n++) {
             if (ownHand().getFaceUp(n) != null) {
-              if (nine == true && pile.topValue() == 9) {
+              if (nine && pile.topValue() == 9) {
                 top = 0;
                 for (int i = 0; i < 52; i++) {
                   if (pile.get(i) == null) {
@@ -1050,7 +1049,7 @@ class Dealer extends PlayerBase {
                 }
               }
               if (canplay) break;
-              if (seven == true
+              if (seven
                   && pile.get(top).getValue() == 7
                   && ownHand().getFaceUp(n).getValue() < 7) {
                 canplay = true;
@@ -1059,7 +1058,7 @@ class Dealer extends PlayerBase {
                   || ownHand().getFaceUp(n).getValue() == 10) {
                 canplay = true;
                 break;
-              } else if (nine == true && ownHand().getFaceUp(n).getValue() == 9) {
+              } else if (nine && ownHand().getFaceUp(n).getValue() == 9) {
                 canplay = true;
                 break;
               } else if (seven != true || pile.get(top).getValue() != 7) {
@@ -1091,11 +1090,11 @@ class Dealer extends PlayerBase {
             canplay = true;
             break;
           }
-          if (nine == true && ownHand().getCard(n).getValue() == 9) {
+          if (nine && ownHand().getCard(n).getValue() == 9) {
             canplay = true;
             break;
           }
-          if (seven == true && pile.get(top).getValue() == 7 && ownHand().getCard(n).getValue() < 7) {
+          if (seven && pile.get(top).getValue() == 7 && ownHand().getCard(n).getValue() < 7) {
             canplay = true;
             break;
           } else if (seven != true || pile.get(top).getValue() != 7) {
@@ -1215,7 +1214,7 @@ class Dealer extends PlayerBase {
           }
         }
 
-      } while (listen == true && socketOK == true);
+      } while (listen && socketOK);
       sh.addMsg(
           "Player "
               + otherNames[socketNumber]
@@ -1303,7 +1302,7 @@ class Dealer extends PlayerBase {
           new WaitforMsg(socketCount);
           socketCount++;
         }
-      } while (listen == true && socketCount < 3 && endlook != true);
+      } while (listen && socketCount < 3 && !endlook);
 
       sh.addMsg("No longer listening for Game Connections");
       if (listenSocket != null)

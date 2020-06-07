@@ -229,7 +229,7 @@ abstract public class PlayerBase {
 
     // determining how many cards of the same value are ontop of each other
     int top = 0;
-    if (nine == true && pile[0].getValue() == 9) {
+    if (nine && pile[0].getValue() == 9) {
       top = 1;
       if (pile[1] != null)
         if (pile[1].getValue() == 9) {
@@ -253,7 +253,7 @@ abstract public class PlayerBase {
       pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY());
       pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 20);
     }
-    if (nine == true && pile[0].getValue() == 9)
+    if (nine && pile[0].getValue() == 9)
       if (top == 1) // one nine
       pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
     if (top == 2) { // 2 nines

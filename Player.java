@@ -206,7 +206,7 @@ class Player extends PlayerBase {
     } else if (pile.isEmpty()) {
       cardAccepted(card, command);
       return true;
-    } else if (nine == true && card.getValue() == 9) {
+    } else if (nine && card.getValue() == 9) {
       cardAccepted(card, command);
       return true;
     }
@@ -423,9 +423,9 @@ class Player extends PlayerBase {
       for (int n = 0; n < 4; n++) {
         // setting scoreboard if game finishes early
         if (n < 3) {
-          if (outofgame[n] == false) score.addScore(otherNames[n], position);
+          if (!outofgame[n]) score.addScore(otherNames[n], position);
         } else {
-          if (outofgame[n] == false) score.addScore(playersName, position);
+          if (!outofgame[n]) score.addScore(playersName, position);
         }
         outofgame[n] = false;
       }
@@ -822,7 +822,7 @@ class Player extends PlayerBase {
           {
             for (int n = 0; n < 3; n++) {
               if (hand.getFaceUp(n) != null) {
-                if (nine == true && pile.topValue() == 9) {
+                if (nine && pile.topValue() == 9) {
                   top = 0;
                   for (int i = 0; i < 52; i++) {
                     if (pile.get(i) == null) {
@@ -834,7 +834,7 @@ class Player extends PlayerBase {
                   }
                 }
                 if (canplay) break;
-                if (seven == true
+                if (seven
                     && pile.get(top).getValue() == 7
                     && hand.getFaceUp(n).getValue() < 7) {
                   canplay = true;
@@ -843,10 +843,10 @@ class Player extends PlayerBase {
                     || hand.getFaceUp(n).getValue() == 10) {
                   canplay = true;
                   break;
-                } else if (nine == true && hand.getFaceUp(n).getValue() == 9) {
+                } else if (nine && hand.getFaceUp(n).getValue() == 9) {
                   canplay = true;
                   break;
-                } else if (seven != true || pile.get(top).getValue() != 7) {
+                } else if (!seven || pile.get(top).getValue() != 7) {
                   if (pile.get(top).getValue() <= hand.getFaceUp(n).getValue()) {
                     canplay = true;
                     break;
@@ -859,7 +859,7 @@ class Player extends PlayerBase {
         } else {
           for (int n = 0; n < hand.length() - 1; n++) {
             if (hand.getCard(n) == null) break;
-            if (nine == true && pile.topValue() == 9) {
+            if (nine && pile.topValue() == 9) {
               top = 0;
               for (int i = 0; i < 52; i++) {
                 if (pile.get(i) == null) {
@@ -875,11 +875,11 @@ class Player extends PlayerBase {
               canplay = true;
               break;
             }
-            if (nine == true && hand.getCard(n).getValue() == 9) {
+            if (nine && hand.getCard(n).getValue() == 9) {
               canplay = true;
               break;
             }
-            if (seven == true && pile.get(top).getValue() == 7 && hand.getCard(n).getValue() < 7) {
+            if (seven && pile.get(top).getValue() == 7 && hand.getCard(n).getValue() < 7) {
               canplay = true;
               break;
             } else if (seven != true || pile.get(top).getValue() != 7) {
@@ -991,7 +991,7 @@ class Player extends PlayerBase {
       deck = 16;
       if (fastgame) deck = 0;
       displayTable();
-      if (swap == true && swapdone == false) { // if performing card swap
+      if (swap && !swapdone) { // if performing card swap
         Card inhand[] = new Card[3];
         Card ontable[] = new Card[3];
         for (int n = 0; n < 3; n++) {
