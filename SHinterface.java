@@ -10,7 +10,7 @@ import javax.swing.*;
 // TODO graphical way of indicating hand sizes
 // TODO fix rightmost hand position
 // TODO right-click (or middle) to send all cards
-// TODO rotation makes card border disappear a bit
+// TODO burnt image is truncated
 
 /*-------------------------------
  This is a Shithead(card game) Program

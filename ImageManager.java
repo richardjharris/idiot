@@ -156,8 +156,8 @@ public class ImageManager {
     BufferedImage dest = new BufferedImage(height, width, type);
 
     Graphics2D graphics2D = dest.createGraphics();
-    graphics2D.translate((height - width) / 2, (height - width) / 2);
-    graphics2D.rotate(Math.PI / 2, height / 2, width / 2);
+    graphics2D.translate((height - width) / 2.0, (height - width) / 2.0);
+    graphics2D.rotate(Math.PI / 2.0, height / 2.0, width / 2.0);
     graphics2D.drawRenderedImage(src, null);
     graphics2D.dispose();
 
