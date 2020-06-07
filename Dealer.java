@@ -32,7 +32,6 @@ class Dealer extends PlayerBase {
 
   Card deck[] = new Card[52];
   Hand hands[] = new Hand[4];
-  Card pile[] = new Card[52];
   GameAI ai;
 
   int gameID = 1; // Stops AI playing a move in wrong game
