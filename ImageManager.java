@@ -2,8 +2,6 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.MediaTracker;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,6 +25,7 @@ public class ImageManager {
   private static final int baseCardHeight = 99;
 
   private int cardWidth, cardHeight;
+  private double scaleFactor;
 
   // These are in the same numbered order as the other SH code.
   // suits: 1-4
@@ -39,6 +38,7 @@ public class ImageManager {
 
     cardWidth = sh.scale(baseCardWidth);
     cardHeight = sh.scale(baseCardHeight);
+    scaleFactor = sh.scaleFactor;
 
     // List of files to load
     ArrayList<String> files = new ArrayList<String>();
@@ -72,11 +72,11 @@ public class ImageManager {
   }
 
   BufferedImage getTitle() {
-    return getImage(titleFilename);
+    return getScaledImage(titleFilename, 1 + (scaleFactor - 1) * .5);
   }
 
   BufferedImage getBurnt() {
-    return getImage(burntFilename);
+    return getScaledImage(burntFilename, scaleFactor);
   }
 
   BufferedImage getCardBack() {
@@ -112,6 +112,11 @@ public class ImageManager {
 
   private BufferedImage getImage(String filename) {
     return images.get(filename);
+  }
+
+  private BufferedImage getScaledImage(String filename, double scale) {
+    BufferedImage img = getImage(filename);
+    return resize(img, (int)(img.getWidth() * scale), (int)(img.getHeight() * scale));
   }
 
   // Return a rotated copy of the image (clockwise 90 degrees)

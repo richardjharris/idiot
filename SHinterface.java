@@ -1,15 +1,12 @@
 import java.awt.*;
 import java.awt.Color;
 import java.awt.event.*;
-import java.awt.geom.*;
 import java.awt.image.*;
 import java.io.IOException;
 import javax.swing.*;
 
-// TODO(release) burnt image needs offset
 // TODO(release) Dialogs (e.g. MultiCardD) should appear in the center
 // TODO Set scaling based on resolution
-// TODO(release) image scaling is bad
 // TODO graphical way of indicating hand sizes
 
 /*-------------------------------
@@ -107,6 +104,26 @@ class SHinterface extends JFrame
     return new Rectangle(scale(arg0), scale(arg1), scale(arg2), scale(arg3));
   }
 
+  Point getCoordsForCentredImage(BufferedImage img) {
+    // Play area is a 450x450 square, with Hand area below it.
+    int canvasSize = scale(450);
+
+    int x = (int)(((double)canvasSize / 2) - ((double)img.getWidth() / 2));
+    int y = (int)(((double)canvasSize / 2) - ((double)img.getHeight() / 2));
+
+    return new Point(x,y);
+  }
+
+  void drawTitle() {
+    g.setColor(Color.black);
+    g.fillRect(0, 0, scale(450), scale(550));
+
+    BufferedImage title = imageManager.getTitle();
+
+    Point xy = getCoordsForCentredImage(title);
+    g.drawImage(title, xy.x, xy.y, this);
+  }
+
   SHinterface() {
     try {
       imageManager = new ImageManager(this);
@@ -116,8 +133,7 @@ class SHinterface extends JFrame
 
     offscreen = new BufferedImage(scale(450), scale(550), BufferedImage.TYPE_3BYTE_BGR);
     g = offscreen.getGraphics();
-    // TODO scale this properly (assumes 1.5 atm)
-    g.drawImage(imageManager.getTitle(), 75, 250, this);
+    drawTitle();
     g.setColor(Color.white);
     g.drawLine(0, scale(450), scale(450), scale(450));
 

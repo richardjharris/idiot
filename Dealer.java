@@ -505,8 +505,11 @@ class Dealer {
         pile[0].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 60);
       }
     } else if (burnt) {
-      // TODO scale up image by 1.5x
-      drawImage(im.getBurnt(), 130, 190);
+      // TODO duplicate code
+      BufferedImage burnBang = im.getBurnt();
+      // Draw in centre of play area
+      Point xy = sh.getCoordsForCentredImage(burnBang);
+      g.drawImage(burnBang, xy.x, xy.y, sh);
       burnt = false;
     }
     g.drawImage(
