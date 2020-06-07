@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
+import java.util.Random;
 
 /**
  * Class for controlling game play ie game dealer
@@ -111,14 +112,15 @@ class Dealer extends PlayerBase {
     this.aipause = aipause;
   }
 
-  private void shuffle() {
-    for (int r = 0; r < 2; r++) // number of times pile shuffled
-    for (int n = 0; n < 52; n++) {
-        int newlocation = (int) Math.round(Math.random() * 51);
-        Card temp = deck[newlocation];
-        deck[newlocation] = deck[n];
-        deck[n] = temp;
-      }
+  private void shuffleDeck() {
+    Random rand = new Random();
+    int n = deck.length;
+    for (int i = 0; i < n - 1; i++) {
+      int j = rand.nextInt(n - i) + i;
+      Card temp = deck[j];
+      deck[j] = deck[i];
+      deck[i] = temp;
+    }
   }
 
   public void createConnection(String playersName) {
@@ -144,7 +146,7 @@ class Dealer extends PlayerBase {
       Card card = new Card(n + 1);
       deck[n] = card;
     }
-    shuffle(); // shuffling card deck
+    shuffleDeck();
     int player = whosturn;
     for (int n = 0; n < 36; n++) {
       // dealing first card in deck
