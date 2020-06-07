@@ -5,27 +5,17 @@ import java.net.*;
 
 /**
  * Class for controlling game play ie game dealer
+ * 
+ * The Dealer class is the host of network games. Players form the other 3.
  *
  * @author Sam Cavenagh
  * @version 6/11/02
  *     <p>Website: http://home.pacific.net.au/~cavenagh/SH/ Email: cavenaghweb@hotmail.com
  */
-class Dealer {
-
+class Dealer extends PlayerBase {
   // how long ai pause for before making move(int ms)
   int aipause = 1000;
 
-  // used for testing makes deck empty at start of game if true
-  boolean fastgame = false;
-
-  // you must play less than a seven if true
-  boolean seven = false;
-
-  // if nine is invisible
-  boolean nine = false;
-
-  // if can swap cards at start of game
-  boolean swap = false;
   int swapcount = 0;
 
   ServerSocket listenSocket;
@@ -33,39 +23,18 @@ class Dealer {
   PrintWriter out[] = new PrintWriter[3];
   BufferedReader in[] = new BufferedReader[3];
 
-  SHinterface sh;
-
-  Graphics g;
-
-  String playersName;
-
-  String otherNames[] = new String[3];
-
-  boolean waitformsg[];
-  boolean outofgame[] = new boolean[4];
-
-  boolean aiPlayer[] = new boolean[3];
-
-  boolean listen = true;
-
-  boolean burnt = false;
+  // Excludes dealer
+  boolean waitformsg[] = { false, false, false };
+  boolean aiPlayer[] = { false, false, false };
 
   int socketCount = 0;
 
   int whosturn = 2;
 
-  int position = 1; // ie first, second,third or shithead
-
   Card deck[] = new Card[52];
   Hand hands[] = new Hand[4];
   Card pile[] = new Card[52];
   GameAI ai;
-
-  Point tableposition[][] = new Point[3][3];
-  Point centre1;
-  Point pointerpoints[] = new Point[4];
-
-  Score score;
 
   int gameID = 1; // Stops AI playing a move in wrong game
 
@@ -84,13 +53,11 @@ class Dealer {
       boolean nine,
       boolean swap,
       Score score) {
-    this.sh = sh;
-    this.g = g;
+      super(sh, g, score);
     this.fastgame = fastgame;
     this.seven = seven;
     this.nine = nine;
     this.swap = swap;
-    this.score = score;
 
     score.imDealer(this);
 
@@ -101,36 +68,10 @@ class Dealer {
     hands[3] = hand;
 
     ai = new GameAI(seven, nine);
+  }
 
-    outofgame[0] = false;
-    outofgame[1] = false;
-    outofgame[2] = false;
-    outofgame[3] = false;
-
-    waitformsg = new boolean[3];
-    for (int n = 0; n < 3; n++) {
-      waitformsg[n] = false;
-      aiPlayer[n] = false;
-    }
-
-    tableposition[0][0] = sh.point(0, 103);
-    tableposition[0][1] = sh.point(0, 188);
-    tableposition[0][2] = sh.point(0, 276);
-
-    tableposition[1][0] = sh.point(103, 0);
-    tableposition[1][1] = sh.point(188, 0);
-    tableposition[1][2] = sh.point(276, 0);
-
-    tableposition[2][0] = sh.point(354, 103);
-    tableposition[2][1] = sh.point(354, 188);
-    tableposition[2][2] = sh.point(354, 276);
-
-    centre1 = sh.point(188, 175);
-
-    pointerpoints[0] = sh.point(115, 220);
-    pointerpoints[1] = sh.point(220, 110);
-    pointerpoints[2] = sh.point(330, 220);
-    pointerpoints[3] = sh.point(220, 330);
+  public Hand ownHand() {
+    return hands[3];
   }
 
   public void onePlayer(String playersName) {
@@ -233,12 +174,12 @@ class Dealer {
       Card ontable[] = new Card[3];
       for (int n = 0; n < 3; n++) {
         waitformsg[n] = true;
-        inhand[n] = hands[3].getCard(n);
-        ontable[n] = hands[3].getFaceUp(n);
+        inhand[n] = ownHand().getCard(n);
+        ontable[n] = ownHand().getFaceUp(n);
       }
       SwapD swapD = new SwapD(sh, inhand, ontable);
       if (swapD.display()) {
-        hands[3].swap(swapD.getInHand(), swapD.getOnTable());
+        ownHand().swap(swapD.getInHand(), swapD.getOnTable());
         displayTable();
       }
       swapcount++;
@@ -382,33 +323,6 @@ class Dealer {
     endConnection();
   }
 
-  // Scaled drawing routines
-  private void drawRoundRect(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
-    g.drawRoundRect(
-        sh.scale(arg0),
-        sh.scale(arg1),
-        sh.scale(arg2),
-        sh.scale(arg3),
-        sh.scale(arg4),
-        sh.scale(arg5));
-  }
-
-  private void drawLine(int arg0, int arg1, int arg2, int arg3) {
-    g.drawLine(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
-  }
-
-  private void fillRect(int arg0, int arg1, int arg2, int arg3) {
-    g.fillRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
-  }
-
-  private void drawString(String s, int x, int y) {
-    g.drawString(s, sh.scale(x), sh.scale(y));
-  }
-
-  private void drawImage(Image i, int x, int y) {
-    g.drawImage(i, sh.scale(x), sh.scale(y), sh);
-  }
-
   public void displayTable() {
     ImageManager im = sh.getImageManager();
     BufferedImage back = im.getCardBack();
@@ -423,7 +337,7 @@ class Dealer {
     g.setColor(Color.white);
     drawString("Deck: " + decklength(), 365, 20);
     drawString("Pile: " + pilelength(), 365, 40);
-    hands[3].showHand();
+    ownHand().showHand();
 
     drawRoundRect(5, 360, 90, 40, 15, 15);
     drawString("Name: " + otherNames[0], 10, 375);
@@ -633,66 +547,66 @@ class Dealer {
   public void cardSelection(int cardno) {
     Card card;
     String command;
-    if (hands[3].getCard(0) == null) { // if player only has cards on table
-      if (hands[3].getFaceUp(0) != null
-          || hands[3].getFaceUp(1) != null
-          || hands[3].getFaceUp(2) != null) { // if cards still faceup on table
-        card = hands[3].getFaceUp(cardno);
+    if (ownHand().getCard(0) == null) { // if player only has cards on table
+      if (ownHand().getFaceUp(0) != null
+          || ownHand().getFaceUp(1) != null
+          || ownHand().getFaceUp(2) != null) { // if cards still faceup on table
+        card = ownHand().getFaceUp(cardno);
         command = "othersturn:" + playersName + ":faceup:";
-        if (isValidCard(card, command)) hands[3].removeFaceUp(cardno);
+        if (isValidCard(card, command)) ownHand().removeFaceUp(cardno);
       } else { // if only cards down
-        card = hands[3].getFaceDown(cardno);
+        card = ownHand().getFaceDown(cardno);
         command = "othersturn:" + playersName + ":facedown:";
         if (isValidCard(card, command)) {
-          hands[3].removeFaceDown(cardno);
+          ownHand().removeFaceDown(cardno);
           // checking if player is out of the game
-          if (hands[3].getFaceDown(0) == null
-              && hands[3].getFaceDown(1) == null
-              && hands[3].getFaceDown(2) == null) outofgame(3);
+          if (ownHand().getFaceDown(0) == null
+              && ownHand().getFaceDown(1) == null
+              && ownHand().getFaceDown(2) == null) outofgame(3);
         } else { // player must pick up the deck if not valid
           sh.addMsg(
               "The card you played was a "
-                  + hands[3].getFaceDown(cardno).getStringValue()
+                  + ownHand().getFaceDown(cardno).getStringValue()
                   + " you had to pick up the pile. BLAOW");
-          hands[3].addCard(hands[3].getFaceDown(cardno));
+          ownHand().addCard(ownHand().getFaceDown(cardno));
           for (int n = 0; n < 3; n++)
             sendCommand(
                 "othersturn:"
                     + playersName
                     + ":facedown:pickup:"
-                    + hands[3].getFaceDown(cardno).getNumber()
+                    + ownHand().getFaceDown(cardno).getNumber()
                     + ":",
                 n);
           for (int n = 0; n < 52; n++) {
             if (pile[n] == null) break;
-            hands[3].addCard(pile[n]);
+            ownHand().addCard(pile[n]);
             pile[n] = null;
           }
-          hands[3].removeFaceDown(cardno);
+          ownHand().removeFaceDown(cardno);
           nextTurn();
         }
       }
     } else { // if player still has cards in hand
-      card = hands[3].getCard(cardno);
+      card = ownHand().getCard(cardno);
       command = "othersturn:" + playersName + ":";
       if (isValidCard(card, command))
-        for (int n = 0; n < hands[3].length() - 1; n++)
-          if (card.getNumber() == hands[3].getCard(n).getNumber()) {
-            hands[3].removeCard(n);
+        for (int n = 0; n < ownHand().length() - 1; n++)
+          if (card.getNumber() == ownHand().getCard(n).getNumber()) {
+            ownHand().removeCard(n);
             break;
           }
       // checking if player is out of the game
-      if (hands[3].getFaceDown(0) == null
-          && hands[3].getFaceDown(1) == null
-          && hands[3].getFaceDown(2) == null
-          && hands[3].getCard(0) == null) {
+      if (ownHand().getFaceDown(0) == null
+          && ownHand().getFaceDown(1) == null
+          && ownHand().getFaceDown(2) == null
+          && ownHand().getCard(0) == null) {
         outofgame(3);
         if (whosturn == 3) nextTurn();
       }
     }
     // if players hand is less than 3 card and card still in deck give another card to player
-    while (deck[0] != null && hands[3].length() <= 3) {
-      hands[3].addCard(deck[0]);
+    while (deck[0] != null && ownHand().length() <= 3) {
+      ownHand().addCard(deck[0]);
       // removing card from deck
       deck[51] = null;
       for (int w = 0; w < 51; w++) deck[w] = deck[w + 1];
@@ -733,8 +647,8 @@ class Dealer {
     // checking how many card of the same value as card played are in players hand
     int amountinhand = 0;
     for (int n = 0; n < 3; n++) {
-      if (hands[3].getFaceUp(n) != null)
-        if (hands[3].getFaceUp(n).getValue() == card.getValue()) amountinhand++;
+      if (ownHand().getFaceUp(n) != null)
+        if (ownHand().getFaceUp(n).getValue() == card.getValue()) amountinhand++;
     }
     if (amountinhand <= 1) return false;
     MultiCardD dialog = new MultiCardD(sh, amountinhand);
@@ -751,14 +665,14 @@ class Dealer {
     addcardtopile(card);
     numbertoplay--;
     for (int n = 0; n < 3; n++)
-      if (hands[3].getFaceUp(n) != null) {
+      if (ownHand().getFaceUp(n) != null) {
         if (numbertoplay <= 0) break;
-        if (card.getValue() == hands[3].getFaceUp(n).getValue()
-            && card.getNumber() != hands[3].getFaceUp(n).getNumber()) {
-          command = command.concat(hands[3].getFaceUp(n).getNumber() + ":");
-          addcardtopile(hands[3].getFaceUp(n));
+        if (card.getValue() == ownHand().getFaceUp(n).getValue()
+            && card.getNumber() != ownHand().getFaceUp(n).getNumber()) {
+          command = command.concat(ownHand().getFaceUp(n).getNumber() + ":");
+          addcardtopile(ownHand().getFaceUp(n));
           // storing which card are to be removed
-          hands[3].removeFaceUp(n);
+          ownHand().removeFaceUp(n);
           numbertoplay--;
         }
       }
@@ -806,9 +720,9 @@ class Dealer {
 
     // checking how many card of the same value as card played are in players hand
     int amountinhand = 0;
-    for (int n = 0; n < hands[3].length(); n++) {
-      if (hands[3].getCard(n) == null) break;
-      if (hands[3].getCard(n).getValue() == card.getValue()) amountinhand++;
+    for (int n = 0; n < ownHand().length(); n++) {
+      if (ownHand().getCard(n) == null) break;
+      if (ownHand().getCard(n).getValue() == card.getValue()) amountinhand++;
     }
     if (amountinhand <= 1) return false;
     MultiCardD dialog = new MultiCardD(sh, amountinhand);
@@ -821,15 +735,15 @@ class Dealer {
     int toberemovedcount = 0;
     int toberemoved[] = new int[3];
     for (int n = 0; n < 3; n++) toberemoved[n] = -1;
-    for (int n = 0; n < hands[3].length() - 1; n++) {
-      if (hands[3].getCard(n) == null) break;
+    for (int n = 0; n < ownHand().length() - 1; n++) {
+      if (ownHand().getCard(n) == null) break;
       if (numbertoplay <= 0) break;
-      if (card.getValue() == hands[3].getCard(n).getValue()
-          && card.getNumber() != hands[3].getCard(n).getNumber()) {
-        command = command.concat(hands[3].getCard(n).getNumber() + ":");
-        addcardtopile(hands[3].getCard(n));
+      if (card.getValue() == ownHand().getCard(n).getValue()
+          && card.getNumber() != ownHand().getCard(n).getNumber()) {
+        command = command.concat(ownHand().getCard(n).getNumber() + ":");
+        addcardtopile(ownHand().getCard(n));
         // storing which card are to be removed
-        toberemoved[toberemovedcount] = hands[3].getCard(n).getNumber();
+        toberemoved[toberemovedcount] = ownHand().getCard(n).getNumber();
         toberemovedcount++;
         numbertoplay--;
       }
@@ -837,9 +751,9 @@ class Dealer {
     // removing card from hand
     for (int n = 0; n < 3; n++) {
       if (toberemoved[n] == -1) break;
-      for (int i = 0; i < hands[3].length() - 1; i++)
-        if (hands[3].getCard(i).getNumber() == toberemoved[n]) {
-          hands[3].removeCard(i);
+      for (int i = 0; i < ownHand().length() - 1; i++)
+        if (ownHand().getCard(i).getNumber() == toberemoved[n]) {
+          ownHand().removeCard(i);
           break;
         }
     }
@@ -850,10 +764,10 @@ class Dealer {
       burnt = true;
       for (int n = 0; n < 51; n++) pile[n] = null;
       // checking if player is out of game
-      if (hands[3].getFaceDown(0) == null
-          && hands[3].getFaceDown(1) == null
-          && hands[3].getFaceDown(2) == null
-          && hands[3].getCard(0) == null) nextTurn();
+      if (ownHand().getFaceDown(0) == null
+          && ownHand().getFaceDown(1) == null
+          && ownHand().getFaceDown(2) == null
+          && ownHand().getCard(0) == null) nextTurn();
       else // else there go again
       sh.addMsg("You burn the pile is your turn again");
     } else {
@@ -884,19 +798,11 @@ class Dealer {
     }
   }
 
-  public boolean fourOfAKind(Card card) {
-    if (pile[0] == null || pile[1] == null || pile[2] == null || card == null) return false;
-    int top = pile[0].getValue();
-    if (pile[1].getValue() == top && pile[2].getValue() == top && card.getValue() == top)
-      return true;
-    return false;
-  }
-
   public boolean isValidCard(Card card, String command) {
     int top = 0;
     boolean multi = false;
-    if (hands[3].getCard(0) != null) multi = checkformulti(card);
-    else if (hands[3].isFaceUp()) multi = checkformultiFaceUp(card);
+    if (ownHand().getCard(0) != null) multi = checkformulti(card);
+    else if (ownHand().isFaceUp()) multi = checkformultiFaceUp(card);
 
     if (multi) return true;
 
@@ -907,14 +813,14 @@ class Dealer {
         || fourOfAKind(card)) { // pile is burn and its players turn again
       burnt = true;
       for (int n = 0; n < 51; n++) pile[n] = null;
-      if (hands[3].isFaceDown() == true || hands[3].length() > 1) {
+      if (ownHand().isFaceDown() == true || ownHand().length() > 1) {
         for (int n = 0; n < 3; n++)
-          if (hands[3].length() > 1) sendCommand(command + "burn:", n);
+          if (ownHand().length() > 1) sendCommand(command + "burn:", n);
           else sendCommand(command + card.getNumber() + ":", n);
         sh.addMsg("You have burnt the pile, its your turn again");
       } else {
         for (int n = 0; n < 3; n++)
-          if (hands[3].length() > 1) sendCommand(command + "burn:", n);
+          if (ownHand().length() > 1) sendCommand(command + "burn:", n);
           else sendCommand(command + card.getNumber() + ":", n);
         sh.setmyTurn(false);
         nextTurn();
@@ -951,7 +857,7 @@ class Dealer {
       cardAccepted(card, command);
       return true;
     }
-    if (hands[3].isFaceUp() == true || hands[3].length() > 1) { // top
+    if (ownHand().isFaceUp() == true || ownHand().length() > 1) { // top
       sh.addMsg("You can't play a " + card.getStringValue() + " please select another card");
     }
     return false;
@@ -1313,22 +1219,16 @@ class Dealer {
     return false;
   }
 
-  private void addcardtopile(Card card) {
-    // adding card to pile
-    for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
-    pile[0] = card;
-  }
-
   private void canDealerPlay() {
     // testing is player has a card they can play
     if (pile[0] != null) {
       int top = 0;
       boolean canplay = false;
-      if (hands[3].getCard(0) == null) { // if player only has card on the table
-        if (hands[3].isFaceUp()) // if player has faceup card on the table
+      if (ownHand().getCard(0) == null) { // if player only has card on the table
+        if (ownHand().isFaceUp()) // if player has faceup card on the table
         {
           for (int n = 0; n < 3; n++) {
-            if (hands[3].getFaceUp(n) != null) {
+            if (ownHand().getFaceUp(n) != null) {
               if (nine == true && pile[0].getValue() == 9) {
                 top = 0;
                 for (int i = 0; i < 52; i++) {
@@ -1343,18 +1243,18 @@ class Dealer {
               if (canplay) break;
               if (seven == true
                   && pile[top].getValue() == 7
-                  && hands[3].getFaceUp(n).getValue() < 7) {
+                  && ownHand().getFaceUp(n).getValue() < 7) {
                 canplay = true;
                 break;
-              } else if (hands[3].getFaceUp(n).getValue() == 2
-                  || hands[3].getFaceUp(n).getValue() == 10) {
+              } else if (ownHand().getFaceUp(n).getValue() == 2
+                  || ownHand().getFaceUp(n).getValue() == 10) {
                 canplay = true;
                 break;
-              } else if (nine == true && hands[3].getFaceUp(n).getValue() == 9) {
+              } else if (nine == true && ownHand().getFaceUp(n).getValue() == 9) {
                 canplay = true;
                 break;
               } else if (seven != true || pile[top].getValue() != 7) {
-                if (pile[top].getValue() <= hands[3].getFaceUp(n).getValue()) {
+                if (pile[top].getValue() <= ownHand().getFaceUp(n).getValue()) {
                   canplay = true;
                   break;
                 }
@@ -1364,8 +1264,8 @@ class Dealer {
         } else // if player only has facedown cards
         canplay = true;
       } else {
-        for (int n = 0; n < hands[3].length() - 1; n++) {
-          if (hands[3].getCard(n) == null) break;
+        for (int n = 0; n < ownHand().length() - 1; n++) {
+          if (ownHand().getCard(n) == null) break;
           if (nine == true && pile[0].getValue() == 9) {
             top = 0;
             for (int i = 0; i < 52; i++) {
@@ -1378,19 +1278,19 @@ class Dealer {
             }
           }
           if (canplay) break;
-          if (hands[3].getCard(n).getValue() == 2 || hands[3].getCard(n).getValue() == 10) {
+          if (ownHand().getCard(n).getValue() == 2 || ownHand().getCard(n).getValue() == 10) {
             canplay = true;
             break;
           }
-          if (nine == true && hands[3].getCard(n).getValue() == 9) {
+          if (nine == true && ownHand().getCard(n).getValue() == 9) {
             canplay = true;
             break;
           }
-          if (seven == true && pile[top].getValue() == 7 && hands[3].getCard(n).getValue() < 7) {
+          if (seven == true && pile[top].getValue() == 7 && ownHand().getCard(n).getValue() < 7) {
             canplay = true;
             break;
           } else if (seven != true || pile[top].getValue() != 7) {
-            if (pile[top].getValue() <= hands[3].getCard(n).getValue()) {
+            if (pile[top].getValue() <= ownHand().getCard(n).getValue()) {
               canplay = true;
               break;
             }
@@ -1405,7 +1305,7 @@ class Dealer {
             "The card played was a " + pile[top].getStringValue() + " you had to pick up the pile. BLAOW");
         for (int n = 0; n < 52; n++) {
           if (pile[n] == null) break;
-          hands[3].addCard(pile[n]);
+          ownHand().addCard(pile[n]);
           pile[n] = null;
         }
         // sending move to other players

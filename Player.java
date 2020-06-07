@@ -10,92 +10,34 @@ import java.net.*;
  * @version 13/11/02
  *     <p>Website: http://home.pacific.net.au/~cavenagh/SH/ Email: cavenaghweb@hotmail.com
  */
-class Player {
-
-  // used for testing makes deck empty at start of game if true
-  boolean fastgame = false;
-
-  // you must play less than a seven if true
-  boolean seven = false;
-
-  // if nine is invisible
-  boolean nine = false;
-
-  // if can swap cards at start of game
-  boolean swap = false;
+class Player extends PlayerBase {
+  // has the player done swap
   boolean swapdone = false;
-
-  boolean burnt = false;
 
   Socket msgSocket;
   PrintWriter out;
   BufferedReader in;
 
-  SHinterface sh;
-
   Hand hand;
-
-  Graphics g;
-
-  String playersName;
-
-  // Details of other players
-  String othernames[] = new String[3];
+ 
   Card faceup[][] = new Card[3][3];
   int carddowncount[] = new int[3];
   int cardcount[] = new int[3];
-  Point tableposition[][] = new Point[3][3];
-
-  Point centre1; // point where pile cards are displayed
 
   int deck; // count of card remaining in deck;
 
-  Card pile[] = new Card[52]; // cards in play pile;
-
-  boolean listen = true; // is thread listening for msg
-
   // for whos turn indicator
   String servername;
+
   int whosturn = 0;
-  boolean outofgame[] = new boolean[4];
-  Point pointerpoints[] = new Point[4];
-
-  Score score; // scoreboard
-  int position = 1;
-
-  Point scalePoint(Point p) {
-    return new Point(sh.scale(p.x), sh.scale(p.y));
-  }
 
   Player(SHinterface sh, Graphics g, Hand hand, Score score) {
-    this.sh = sh;
-    this.g = g;
+    super(sh, g, score);
     this.hand = hand;
-    this.score = score;
+  }
 
-    tableposition[0][0] = sh.point(0, 103);
-    tableposition[0][1] = sh.point(0, 188);
-    tableposition[0][2] = sh.point(0, 276);
-
-    tableposition[1][0] = sh.point(103, 0);
-    tableposition[1][1] = sh.point(188, 0);
-    tableposition[1][2] = sh.point(276, 0);
-
-    tableposition[2][0] = sh.point(354, 103);
-    tableposition[2][1] = sh.point(354, 188);
-    tableposition[2][2] = sh.point(354, 276);
-
-    centre1 = sh.point(188, 175);
-
-    outofgame[0] = false;
-    outofgame[1] = false;
-    outofgame[2] = false;
-    outofgame[3] = false;
-
-    pointerpoints[0] = sh.point(115, 220);
-    pointerpoints[1] = sh.point(220, 110);
-    pointerpoints[2] = sh.point(330, 220);
-    pointerpoints[3] = sh.point(220, 330);
+  public Hand ownHand() {
+    return hand;
   }
 
   public void createConnection(String servername, String playersName) {
@@ -163,14 +105,6 @@ class Player {
     out.println(command);
   }
 
-  private boolean fourOfAKind(Card card) {
-    if (pile[0] == null || pile[1] == null || pile[2] == null || card == null) return false;
-    int top = pile[0].getValue();
-    if (pile[1].getValue() == top && pile[2].getValue() == top && card.getValue() == top)
-      return true;
-    return false;
-  }
-
   public void endConnection() {
     listen = false;
 
@@ -194,33 +128,6 @@ class Player {
     }
   }
 
-  // TODO copied from Dealer for now
-  private void drawRoundRect(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
-    g.drawRoundRect(
-        sh.scale(arg0),
-        sh.scale(arg1),
-        sh.scale(arg2),
-        sh.scale(arg3),
-        sh.scale(arg4),
-        sh.scale(arg5));
-  }
-
-  private void drawLine(int arg0, int arg1, int arg2, int arg3) {
-    g.drawLine(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
-  }
-
-  private void fillRect(int arg0, int arg1, int arg2, int arg3) {
-    g.fillRect(sh.scale(arg0), sh.scale(arg1), sh.scale(arg2), sh.scale(arg3));
-  }
-
-  private void drawString(String s, int x, int y) {
-    g.drawString(s, sh.scale(x), sh.scale(y));
-  }
-
-  private void drawImage(Image i, int x, int y) {
-    g.drawImage(i, sh.scale(x), sh.scale(y), sh);
-  }
-
   // TODO this looks like a copy of Dealer's method.
   public void displayTable() {
     ImageManager im = sh.getImageManager();
@@ -239,7 +146,7 @@ class Player {
     hand.showHand();
 
     drawRoundRect(5, 360, 90, 40, 15, 15);
-    drawString("Name: " + othernames[0], 10, 375);
+    drawString("Name: " + otherNames[0], 10, 375);
     drawString("Cards: " + cardcount[0], 10, 395);
     drawImage(im.getPointer(1), 68, 380);
     if (faceup[0][0] != null) faceup[0][0].drawSideWays(tableposition[0][0]);
@@ -253,7 +160,7 @@ class Player {
       g.drawImage(backSW, (int) tableposition[0][2].getX(), (int) tableposition[0][2].getY(), sh);
 
     drawRoundRect(5, 5, 90, 40, 15, 15);
-    drawString("Name: " + othernames[1], 10, 20);
+    drawString("Name: " + otherNames[1], 10, 20);
     drawString("Cards: " + cardcount[1], 10, 40);
     drawImage(im.getPointer(2), 70, 25);
 
@@ -269,7 +176,7 @@ class Player {
       g.drawImage(back, (int) tableposition[1][2].getX(), (int) tableposition[1][2].getY(), sh);
 
     drawRoundRect(355, 360, 90, 40, 15, 15);
-    drawString("Name: " + othernames[2], 360, 375);
+    drawString("Name: " + otherNames[2], 360, 375);
     drawString("Cards: " + cardcount[2], 360, 395);
     drawImage(im.getPointer(1), 423, 380);
     if (faceup[2][0] != null) faceup[2][0].drawSideWays(tableposition[2][0]);
@@ -600,12 +507,6 @@ class Player {
     return true;
   }
 
-  private void addcardtopile(Card card) {
-    // adding card to pile
-    for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
-    pile[0] = card;
-  }
-
   private void cardAccepted(Card card, String command) {
     sendCommand(command + card.getNumber() + ":");
     // adding card to pile
@@ -690,14 +591,14 @@ class Player {
       for (int n = 0; n < 4; n++) {
         // setting scoreboard if game finishes early
         if (n < 3) {
-          if (outofgame[n] == false) score.addScore(othernames[n], position);
+          if (outofgame[n] == false) score.addScore(otherNames[n], position);
         } else {
           if (outofgame[n] == false) score.addScore(playersName, position);
         }
         outofgame[n] = false;
       }
       position = 1;
-      for (int n = 0; n < 3; n++) if (othernames[n].equals(servername)) whosturn = n;
+      for (int n = 0; n < 3; n++) if (otherNames[n].equals(servername)) whosturn = n;
       hand.removeAll();
       for (int n = 0; n < 3; n++) {
         for (int i = 0; i < 3; i++) faceup[n][i] = null;
@@ -771,7 +672,7 @@ class Player {
       position++;
 
       for (int n = 0; n < 3; n++)
-        if (othernames[n].equals(name)) {
+        if (otherNames[n].equals(name)) {
           outofgame[n] = true;
           if (whosturn == n) {
             nextTurn();
@@ -799,7 +700,7 @@ class Player {
 
       score.addScore(name, 4);
 
-      for (int n = 0; n < 3; n++) if (othernames[n].equals(name)) outofgame[n] = true;
+      for (int n = 0; n < 3; n++) if (otherNames[n].equals(name)) outofgame[n] = true;
 
       score.display();
     }
@@ -842,7 +743,7 @@ class Player {
       // determining which player just had a turn
       int playernumber = 0;
       for (int n = 0; n < 3; n++)
-        if (name.equals(othernames[n])) {
+        if (name.equals(otherNames[n])) {
           playernumber = n;
           break;
         }
@@ -850,7 +751,7 @@ class Player {
       if (cardno.equals("pickup")) { // other players picks up pile
         cardcount[playernumber] = cardcount[playernumber] + pilelength();
         for (int n = 0; n < 52; n++) pile[n] = null;
-        sh.addMsg(othernames[playernumber] + " picked up the pile");
+        sh.addMsg(otherNames[playernumber] + " picked up the pile");
       } else if (cardno.equals("burn")) { // other player burns the pile
         burnt = true;
         burn = true;
@@ -925,7 +826,7 @@ class Player {
           cardcount[playernumber] = cardcount[playernumber] + pilelength() + 1;
           for (int n = 0; n < 52; n++) pile[n] = null;
           sh.addMsg(
-              othernames[playernumber]
+              otherNames[playernumber]
                   + " played a "
                   + Card.getCardStringValue(numPlayed)
                   + " and had to picked up the pile");
@@ -1075,7 +976,7 @@ class Player {
         burnt = true;
         burn = true;
         // removing cards from pile
-        sh.addMsg(othernames[playernumber] + " burnt the pile.");
+        sh.addMsg(otherNames[playernumber] + " burnt the pile.");
         for (int i = 0; i < 51; i++) pile[i] = null;
       }
       return burn;
@@ -1251,11 +1152,11 @@ class Player {
 
       // adding other players details to storage arrays
       for (int n = 0; n < 3; n++) {
-        othernames[n] = variables[4 * n];
+        otherNames[n] = variables[4 * n];
         score.addName(variables[4 * n]);
-        // sh.addMsg("Test - othername " + othernames[n] + " severname " +
+        // sh.addMsg("Test - othername " + otherNames[n] + " severname " +
         // servername);//--------------------TEST
-        if (othernames[n].equals(servername)) whosturn = n;
+        if (otherNames[n].equals(servername)) whosturn = n;
         cardcount[n] = 3;
         carddowncount[n] = 3;
         try {
