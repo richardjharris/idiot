@@ -65,6 +65,10 @@ abstract public class PlayerBase {
   // while Dealers keep track of all of them
   abstract protected Hand ownHand();
 
+  abstract protected int deckLength();
+
+  abstract protected int handLength(int playerNo);
+
   // Utilities
   protected boolean fourOfAKind(Card card) {
     if (pile[0] == null || pile[1] == null || pile[2] == null || card == null) return false;
@@ -78,6 +82,15 @@ abstract public class PlayerBase {
     // adding card to pile
     for (int i = 51; i > 0; i--) pile[i] = pile[i - 1];
     pile[0] = card;
+  }
+
+  protected int pilelength() {
+    int cardCount = 0;
+    for (int n = 0; n < 52; n++) {
+      if (pile[n] == null) break;
+      cardCount++;
+    }
+    return cardCount;
   }
 
   private void initTablePositions() {

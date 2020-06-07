@@ -323,6 +323,10 @@ class Dealer extends PlayerBase {
     endConnection();
   }
 
+  protected int handLength(int playerNo) {
+    return hands[playerNo].length() - 1;
+  }
+
   public void displayTable() {
     ImageManager im = sh.getImageManager();
     BufferedImage back = im.getCardBack();
@@ -335,13 +339,13 @@ class Dealer extends PlayerBase {
     g.setColor(Color.red);
     drawRoundRect(355, 5, 90, 40, 15, 15);
     g.setColor(Color.white);
-    drawString("Deck: " + decklength(), 365, 20);
+    drawString("Deck: " + deckLength(), 365, 20);
     drawString("Pile: " + pilelength(), 365, 40);
     ownHand().showHand();
 
     drawRoundRect(5, 360, 90, 40, 15, 15);
     drawString("Name: " + otherNames[0], 10, 375);
-    drawString("Cards: " + (hands[0].length() - 1), 10, 395);
+    drawString("Cards: " + handLength(0), 10, 395);
     drawImage(im.getPointer(1), 68, 380);
 
     // tableposition is already scaled
@@ -357,7 +361,7 @@ class Dealer extends PlayerBase {
 
     drawRoundRect(5, 5, 90, 40, 15, 15);
     drawString("Name: " + otherNames[1], 10, 20);
-    drawString("Cards: " + (hands[1].length() - 1), 10, 40);
+    drawString("Cards: " + handLength(1), 10, 40);
     drawImage(im.getPointer(2), 70, 25);
 
     if (hands[1].getFaceUp(0) != null) hands[1].getFaceUp(0).drawCard(tableposition[1][0]);
@@ -371,8 +375,8 @@ class Dealer extends PlayerBase {
       g.drawImage(back, (int) tableposition[1][2].getX(), (int) tableposition[1][2].getY(), sh);
 
     drawRoundRect(355, 360, 90, 40, 15, 15);
-    drawString("Name: " + otherNames[2], 360, 375); // 365
-    drawString("Cards: " + (hands[2].length() - 1), 360, 395); // 365
+    drawString("Name: " + otherNames[2], 360, 375);
+    drawString("Cards: " + handLength(2), 360, 395);
     drawImage(im.getPointer(1), 423, 380);
 
     if (hands[2].getFaceUp(0) != null) hands[2].getFaceUp(0).drawSideWays(tableposition[2][0]);
@@ -384,6 +388,7 @@ class Dealer extends PlayerBase {
     if (hands[2].getFaceUp(2) != null) hands[2].getFaceUp(2).drawSideWays(tableposition[2][2]);
     else if (hands[2].getFaceDown(2) != null)
       g.drawImage(backSW, (int) tableposition[2][2].getX(), (int) tableposition[2][2].getY(), sh);
+
     // drawing pile
     if (pile[0] != null) {
       // determining how many cards of the same value are ontop of each other
@@ -467,16 +472,7 @@ class Dealer extends PlayerBase {
     }
   }
 
-  private int pilelength() {
-    int cardCount = 0;
-    for (int n = 0; n < 52; n++) {
-      if (pile[n] == null) break;
-      cardCount++;
-    }
-    return cardCount;
-  }
-
-  private int decklength() {
+  protected int deckLength() {
     int cardCount = 0;
     for (int n = 0; n < 52; n++) {
       if (deck[n] == null) break;

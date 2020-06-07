@@ -40,6 +40,10 @@ class Player extends PlayerBase {
     return hand;
   }
 
+  protected int deckLength() {
+    return deck;
+  }
+
   public void createConnection(String servername, String playersName) {
     this.playersName = playersName;
     score.addName(playersName);
@@ -128,7 +132,10 @@ class Player extends PlayerBase {
     }
   }
 
-  // TODO this looks like a copy of Dealer's method.
+  protected int handLength(int playerNo) {
+    return cardcount[playerNo];
+  }
+
   public void displayTable() {
     ImageManager im = sh.getImageManager();
     BufferedImage back = im.getCardBack();
@@ -141,14 +148,17 @@ class Player extends PlayerBase {
     g.setColor(Color.red);
     drawRoundRect(355, 5, 90, 40, 15, 15);
     g.setColor(Color.white);
-    drawString("Deck: " + deck, 365, 20);
+    drawString("Deck: " + deckLength(), 365, 20);
     drawString("Pile: " + pilelength(), 365, 40);
-    hand.showHand();
+    ownHand().showHand();
 
     drawRoundRect(5, 360, 90, 40, 15, 15);
     drawString("Name: " + otherNames[0], 10, 375);
-    drawString("Cards: " + cardcount[0], 10, 395);
+    drawString("Cards: " + handLength(0), 10, 395);
     drawImage(im.getPointer(1), 68, 380);
+
+    // -- above this point is identical in both
+
     if (faceup[0][0] != null) faceup[0][0].drawSideWays(tableposition[0][0]);
     else if (carddowncount[0] >= 3)
       g.drawImage(backSW, (int) tableposition[0][0].getX(), (int) tableposition[0][0].getY(), sh);
@@ -161,10 +171,9 @@ class Player extends PlayerBase {
 
     drawRoundRect(5, 5, 90, 40, 15, 15);
     drawString("Name: " + otherNames[1], 10, 20);
-    drawString("Cards: " + cardcount[1], 10, 40);
+    drawString("Cards: " + handLength(1), 10, 40);
     drawImage(im.getPointer(2), 70, 25);
 
-    // TODO these need scaling
     if (faceup[1][0] != null) faceup[1][0].drawCard(tableposition[1][0]);
     else if (carddowncount[1] >= 3)
       g.drawImage(back, (int) tableposition[1][0].getX(), (int) tableposition[1][0].getY(), sh);
@@ -177,8 +186,9 @@ class Player extends PlayerBase {
 
     drawRoundRect(355, 360, 90, 40, 15, 15);
     drawString("Name: " + otherNames[2], 360, 375);
-    drawString("Cards: " + cardcount[2], 360, 395);
+    drawString("Cards: " + handLength(2), 360, 395);
     drawImage(im.getPointer(1), 423, 380);
+
     if (faceup[2][0] != null) faceup[2][0].drawSideWays(tableposition[2][0]);
     else if (carddowncount[2] >= 3)
       g.drawImage(backSW, (int) tableposition[2][0].getX(), (int) tableposition[2][0].getY(), sh);
@@ -289,7 +299,7 @@ class Player extends PlayerBase {
             break;
           }
     }
-    if (deck <= 0 || hand.length() > 3) displayTable();
+    if (deckLength() <= 0 || hand.length() > 3) displayTable();
   }
 
   private boolean isValidCard(Card card, String command) {
@@ -514,15 +524,6 @@ class Player extends PlayerBase {
     pile[0] = card;
     sh.setmyTurn(false);
     nextTurn();
-  }
-
-  private int pilelength() {
-    int cardCount = 0;
-    for (int n = 0; n < 52; n++) {
-      if (pile[n] == null) break;
-      cardCount++;
-    }
-    return cardCount;
   }
 
   class WaitforMsg implements Runnable {
