@@ -114,7 +114,7 @@ public class Hand {
         y = 515;
       }
 
-      hand[n].drawCard(sh.scale(x), sh.scale(y));
+      sh.drawCard(hand[n], sh.scale(x), sh.scale(y));
 
       // creating cardBox
 
@@ -142,7 +142,7 @@ public class Hand {
     }
 
     for (int n = 0; n < 3; n++)
-      if (faceup[n] != null) faceup[n].drawCard(ontable[n]);
+      if (faceup[n] != null) sh.drawCard(faceup[n], ontable[n]);
       else if (facedown[n] != null)
         g.drawImage(back, (int) ontable[n].getX(), (int) ontable[n].getY(), sh);
   }

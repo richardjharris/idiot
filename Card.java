@@ -17,20 +17,14 @@ public class Card {
   // Original card number from 0-51.
   int cardNumber;
 
-  // TODO move routines to SHinterface.
-  SHinterface sh;
-  Graphics g;
-
   public static final String[] suits = {"H", "S", "D", "C"};
   public static final String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
   public static final String[] suitsLong = {"Hearts", "Spades", "Diamonds", "Clubs"};
   public static final String[] ranksLong = {"Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace"};
 
-  public Card(int cardNumber, SHinterface sh, Graphics g) {
+  public Card(int cardNumber) {
     this.cardNumber = cardNumber;
-    this.sh = sh;
-    this.g = g;
 
     if (cardNumber < 1 || cardNumber > 52) {
       throw new Error("Invalid card number: " + cardNumber);
@@ -38,40 +32,6 @@ public class Card {
 
     cardSuit = getCardSuit(cardNumber);
     cardValue = getCardValue(cardNumber, cardSuit);
-  }
-
-  private BufferedImage cardPic() {
-    return sh.getImageManager().getCardFront(cardSuit, cardValue);
-  }
-
-  private BufferedImage cardSideways() {
-    return sh.getImageManager().getCardFrontSideways(cardSuit, cardValue);
-  }
-
-  public void drawCard(Point p, boolean sideways) {
-    if (sideways) drawSideways(p);
-    else drawCard(p);
-  }
-
-  public void drawCard(int x, int y, boolean sideways) {
-    if (sideways) drawSideways(x, y);
-    else drawCard(x, y);
-  }
-
-  public void drawCard(Point p) {
-    g.drawImage(cardPic(), (int) p.getX(), (int) p.getY(), sh);
-  }
-
-  public void drawCard(int x, int y) {
-    g.drawImage(cardPic(), x, y, sh);
-  }
-
-  public void drawSideways(Point p) {
-    g.drawImage(cardSideways(), (int) p.getX(), (int) p.getY(), sh);
-  }
-
-  public void drawSideways(int x, int y) {
-    g.drawImage(cardSideways(), x, y, sh);
   }
 
   public int getSuit() {

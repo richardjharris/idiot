@@ -141,7 +141,7 @@ class Dealer extends PlayerBase {
   private void deal() {
     // adding card to deck
     for (int n = 0; n < 52; n++) {
-      Card card = new Card(n + 1, sh, g);
+      Card card = new Card(n + 1);
       deck[n] = card;
     }
     shuffle(); // shuffling card deck
@@ -1147,7 +1147,7 @@ class Dealer extends PlayerBase {
           } catch (NumberFormatException b) {
             sh.addMsg("processSwap - error - variable to Int error: " + b);
           }
-          Card card = new Card(cardno, sh, g);
+          Card card = new Card(cardno);
           if (r == 0) inhand[n] = card;
           else ontable[n] = card;
         }

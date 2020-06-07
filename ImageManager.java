@@ -250,7 +250,7 @@ public class ImageManager {
   static private Graphics2D createGraphics(BufferedImage img) {
     Graphics2D g = img.createGraphics();
     g.setRenderingHint(
-      RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+      RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		return g;  
   }

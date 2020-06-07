@@ -215,6 +215,34 @@ class SHinterface extends JFrame
     soundManager = new SoundManager();
   }
 
+  public void drawCard(Card c, Point p, boolean sideways) {
+    if (sideways) drawSideways(c, p);
+    else drawCard(c, p);
+  }
+
+  public void drawCard(Card c, int x, int y, boolean sideways) {
+    if (sideways) drawSideways(c, x, y);
+    else drawCard(c, x, y);
+  }
+
+  public void drawCard(Card c, Point p) {
+    drawCard(c, p.x, p.y);
+  }
+
+  public void drawCard(Card c, int x, int y) {
+    BufferedImage img = getImageManager().getCardFront(c.cardSuit, c.cardValue);
+    g.drawImage(img, x, y, this);
+  }
+
+  public void drawSideways(Card c, Point p) {
+    drawSideways(c, p.x, p.y);
+  }
+
+  public void drawSideways(Card c, int x, int y) {
+    BufferedImage img = getImageManager().getCardFrontSideways(c.cardSuit, c.cardValue);
+    g.drawImage(img, x, y, this);
+  }
+
   public void actionPerformed(ActionEvent event) {
     String label = event.getActionCommand();
 

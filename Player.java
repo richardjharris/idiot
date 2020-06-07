@@ -606,7 +606,7 @@ class Player extends PlayerBase {
           burn = faceupmulti(otherplayermsg, varlength3, playernumber);
         } else {
           try {
-            Card card = new Card(Integer.parseInt(cardno2), sh, g);
+            Card card = new Card(Integer.parseInt(cardno2));
             // adding card to pile
             pile.add(card);
             // burning pile if a 10 is played
@@ -661,7 +661,7 @@ class Player extends PlayerBase {
                   + " and had to picked up the pile");
         } else {
           try {
-            Card card = new Card(Integer.parseInt(cardno2), sh, g);
+            Card card = new Card(Integer.parseInt(cardno2));
             pile.add(card);
             // burning pile if a 10 is played
             if (pile.topValue() == 10 || pile.isFourOfAKind()) {
@@ -707,7 +707,7 @@ class Player extends PlayerBase {
           String cardnoString = otherplayermsg.substring(varlength2 + 1, varlength3);
           // converting string to int for processing
           try {
-            Card card = new Card(Integer.parseInt(cardnoString), sh, g);
+            Card card = new Card(Integer.parseInt(cardnoString));
             pile.add(card);
           } catch (NumberFormatException b) {
             sh.addMsg("processTurn - multi - variable to Int error: " + b);
@@ -729,7 +729,7 @@ class Player extends PlayerBase {
       } else {
         // adding card to pile
         try {
-          Card card = new Card(Integer.parseInt(cardno), sh, g);
+          Card card = new Card(Integer.parseInt(cardno));
           pile.add(card);
           // burning pile if a 10 is played
           if (pile.topValue() == 10 || pile.isFourOfAKind()) {
@@ -782,7 +782,7 @@ class Player extends PlayerBase {
         String cardnoString = otherplayermsg.substring(varlength2 + 1, varlength3);
         // converting string to int for processing
         try {
-          Card card = new Card(Integer.parseInt(cardnoString), sh, g);
+          Card card = new Card(Integer.parseInt(cardnoString));
           pile.add(card);
 
           for (int i = 0; i < 3; i++)
@@ -923,7 +923,7 @@ class Player extends PlayerBase {
 
       // Adding card to hand
       try {
-        Card card = new Card(Integer.parseInt(variable), sh, g);
+        Card card = new Card(Integer.parseInt(variable));
         hand.addCard(card);
       } catch (NumberFormatException b) {
         sh.addMsg("Deal - variable to Int error: " + b);
@@ -946,7 +946,7 @@ class Player extends PlayerBase {
 
       // Adding card to deck
       try {
-        Card card = new Card(Integer.parseInt(variable), sh, g);
+        Card card = new Card(Integer.parseInt(variable));
         hand.deal(card);
       } catch (NumberFormatException b) {
         sh.addMsg("Deal - variable to Int error: " + b);
@@ -981,7 +981,7 @@ class Player extends PlayerBase {
         carddowncount[n] = 3;
         try {
           for (int i = 0; i < 3; i++) {
-            Card card = new Card(Integer.parseInt(variables[4 * n + 1 + i]), sh, g);
+            Card card = new Card(Integer.parseInt(variables[4 * n + 1 + i]));
             faceup[n][i] = card;
           }
         } catch (NumberFormatException b) {

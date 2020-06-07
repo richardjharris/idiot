@@ -200,7 +200,7 @@ abstract public class PlayerBase {
       for (int card = 0; card <= 2; card++) {
         Card faceUpCard = getFaceUpCard(player, card);
         if (faceUpCard != null) {
-          faceUpCard.drawCard(tableposition[player][card], sideways);
+          sh.drawCard(faceUpCard, tableposition[player][card], sideways);
         } else if (hasFaceDownCard(player, card)) {
           g.drawImage(sideways ? backSW : back, (int) tableposition[player][card].getX(), (int) tableposition[player][card].getY(), sh);
         }
@@ -225,6 +225,7 @@ abstract public class PlayerBase {
 
   protected void drawPile() {
     // HACK as I don't feel like rewriting this yet.
+    // TODO scale the offsets?
     Card[] pile = this.pile.rawData();
 
     // determining how many cards of the same value are ontop of each other
@@ -244,26 +245,26 @@ abstract public class PlayerBase {
       else break;
     }
     if (samecount == 1) { // one of a kind
-      if (pile[top] != null) pile[top].drawCard(centre1);
+      if (pile[top] != null) sh.drawCard(pile[top], centre1);
     } else if (samecount == 2) { // 2 of a kind
-      pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY() - 10);
-      pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 10);
+      sh.drawCard(pile[top + 1], (int) centre1.getX(), (int) centre1.getY() - 10);
+      sh.drawCard(pile[top], (int) centre1.getX(), (int) centre1.getY() + 10);
     } else if (samecount >= 3) { // 3 of a kind
-      pile[top + 2].drawCard((int) centre1.getX(), (int) centre1.getY() - 20);
-      pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY());
-      pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 20);
+      sh.drawCard(pile[top + 2], (int) centre1.getX(), (int) centre1.getY() - 20);
+      sh.drawCard(pile[top + 1], (int) centre1.getX(), (int) centre1.getY());
+      sh.drawCard(pile[top], (int) centre1.getX(), (int) centre1.getY() + 20);
     }
     if (nine && pile[0].getValue() == 9)
       if (top == 1) // one nine
-      pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
+      sh.drawSideways(pile[0], (int) centre1.getX() - 15, (int) centre1.getY() + 40);
     if (top == 2) { // 2 nines
-      pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-      pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
+      sh.drawSideways(pile[1], (int) centre1.getX() - 15, (int) centre1.getY() + 40);
+      sh.drawSideways(pile[0], (int) centre1.getX() - 15, (int) centre1.getY() + 50);
     }
     if (top == 3) { // 3 nines
-      pile[2].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-      pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
-      pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 60);
+      sh.drawSideways(pile[2], (int) centre1.getX() - 15, (int) centre1.getY() + 40);
+      sh.drawSideways(pile[1], (int) centre1.getX() - 15, (int) centre1.getY() + 50);
+      sh.drawSideways(pile[0], (int) centre1.getX() - 15, (int) centre1.getY() + 60);
     }
   }
 
