@@ -1,6 +1,5 @@
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
-import java.awt.MediaTracker;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -33,9 +32,7 @@ public class ImageManager {
   // ranks: 2-10, 11(J), 12(Q), 13(K), 14(A)
   private String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
-  ImageManager(SHinterface sh) throws InterruptedException, IOException {
-    MediaTracker tracker = new MediaTracker(sh);
-
+  ImageManager(SHinterface sh) throws IOException {
     cardWidth = sh.scale(baseCardWidth);
     cardHeight = sh.scale(baseCardHeight);
     scaleFactor = sh.scaleFactor;
@@ -57,10 +54,7 @@ public class ImageManager {
     for (String file : files) {
       BufferedImage image = ImageIO.read(this.getClass().getResource(file));
       images.put(file, image);
-      tracker.addImage(image, 1);
     }
-
-    tracker.waitForAll();
 
     // Produce rotated pointer images
     pointer[0] = getImage(pointerFilename);

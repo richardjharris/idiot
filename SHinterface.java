@@ -127,7 +127,7 @@ class SHinterface extends JFrame
   SHinterface() {
     try {
       imageManager = new ImageManager(this);
-    } catch (InterruptedException | IOException e) {
+    } catch (IOException e) {
       msg.setText("Load Error " + e);
     }
 
