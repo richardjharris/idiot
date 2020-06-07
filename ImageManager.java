@@ -10,10 +10,14 @@ import javax.imageio.ImageIO;
 /** Holds all images. */
 public class ImageManager {
   private static final String cardsPath = "cards2/";
-  private static final String cardBackFilename =  "back2.png";
+  private static final String cardBackFilenameNormal =  "back2.png";
+  private static final String cardBackFilenameAlt =  "back2d.png";
   private static final String titleFilename = "SHtitle.jpg";
   private static final String pointerFilename = "pointer.gif";
   private static final String burntFilename = "burnt.jpg";
+
+  // Percent chance of Dan card back
+  private static final double DAN_CHANCE = 0.05;
 
   // Caches images loaded from the jar. Populated on demand.
   private HashMap<String, BufferedImage> cache = new HashMap<String, BufferedImage>();
@@ -26,6 +30,7 @@ public class ImageManager {
 
   private int cardWidth, cardHeight;
   private double scaleFactor;
+  private String cardBackFilename;
 
   // Public methods
 
@@ -40,6 +45,9 @@ public class ImageManager {
       pointer[i] = get(prefix + pointerFilename);
       prefix += "rotate$";
     }
+
+    // Pick a random background image for this session
+    cardBackFilename = pickCardBackFilename();
   }
 
   public BufferedImage getTitle() {
@@ -130,6 +138,12 @@ public class ImageManager {
     String suitString = Card.suits[suit - 1];
 
     return cardsPath + "500px-" + rankString + suitString + ".svg.png";
+  }
+
+  // Returns a 'random' card back filename.
+  private static String pickCardBackFilename() {
+    return Math.random() >= (1.0 - DAN_CHANCE) ?
+      cardBackFilenameAlt : cardBackFilenameNormal;
   }
 
   // Return a rotated copy of the image (clockwise 90 degrees)
