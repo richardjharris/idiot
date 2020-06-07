@@ -410,24 +410,24 @@ class Dealer extends PlayerBase {
       if (samecount == 1) { // one of a kind
         if (pile[top] != null) pile[top].drawCard(centre1);
       } else if (samecount == 2) { // 2 of a kind
-        pile[top + 1].drawCard2((int) centre1.getX(), (int) centre1.getY() - 10);
-        pile[top].drawCard2((int) centre1.getX(), (int) centre1.getY() + 10);
+        pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY() - 10);
+        pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 10);
       } else if (samecount >= 3) { // 3 of a kind
-        pile[top + 2].drawCard2((int) centre1.getX(), (int) centre1.getY() - 20);
-        pile[top + 1].drawCard2((int) centre1.getX(), (int) centre1.getY());
-        pile[top].drawCard2((int) centre1.getX(), (int) centre1.getY() + 20);
+        pile[top + 2].drawCard((int) centre1.getX(), (int) centre1.getY() - 20);
+        pile[top + 1].drawCard((int) centre1.getX(), (int) centre1.getY());
+        pile[top].drawCard((int) centre1.getX(), (int) centre1.getY() + 20);
       }
       if (nine == true && pile[0].getValue() == 9)
         if (top == 1) // one nine
-        pile[0].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 40);
+        pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
       if (top == 2) { // 2 nines
-        pile[1].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-        pile[0].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 50);
+        pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
+        pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
       }
       if (top == 3) { // 3 nines
-        pile[2].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 40);
-        pile[1].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 50);
-        pile[0].drawSideWays2((int) centre1.getX() - 15, (int) centre1.getY() + 60);
+        pile[2].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 40);
+        pile[1].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 50);
+        pile[0].drawSideways((int) centre1.getX() - 15, (int) centre1.getY() + 60);
       }
     } else if (burnt) {
       // TODO duplicate code

@@ -114,7 +114,7 @@ public class Hand {
         y = 515;
       }
 
-      hand[n].drawCard2(sh.scale(x), sh.scale(y));
+      hand[n].drawCard(sh.scale(x), sh.scale(y));
 
       // creating cardBox
 

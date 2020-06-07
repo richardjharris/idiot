@@ -37,7 +37,7 @@ public class Card {
     g.drawImage(cardPic, (int) p.getX(), (int) p.getY(), sh);
   }
 
-  public void drawCard2(int x, int y) {
+  public void drawCard(int x, int y) {
     g.drawImage(cardPic, x, y, sh);
   }
 
@@ -45,7 +45,7 @@ public class Card {
     g.drawImage(cardSideWays, (int) p.getX(), (int) p.getY(), sh);
   }
 
-  public void drawSideWays2(int x, int y) {
+  public void drawSideways(int x, int y) {
     g.drawImage(cardSideWays, x, y, sh);
   }
 
