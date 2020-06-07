@@ -447,16 +447,12 @@ class SHinterface extends JFrame
     //   UIManager.setLookAndFeel("javax.swing.plaf.mac.MacLookAndFeel");
     // } catch (Exception e) { System.out.println("Look and Feel Error " + e); }
 
-    try {
-      SHinterface frame = new SHinterface();
-      frame.setTitle("Shithead");
-      frame.setResizable(false);
+    SHinterface frame = new SHinterface();
+    frame.setTitle("Shithead");
+    frame.setResizable(false);
 
-      frame.pack();
-      frame.setVisible(true);
-    } catch (Exception e) {
-      System.out.println("System Error: " + e);
-    }
+    frame.pack();
+    frame.setVisible(true);
   }
 
   public void windowClosing(WindowEvent e) {
