@@ -126,6 +126,9 @@ class SHinterface extends JFrame
 
     Point xy = getCoordsForCentredImage(title);
     g.drawImage(title, xy.x, xy.y, this);
+
+    g.setColor(Color.white);
+    g.drawLine(0, scale(450), scale(450), scale(450));
   }
 
   SHinterface() {
@@ -138,8 +141,6 @@ class SHinterface extends JFrame
     offscreen = new BufferedImage(scale(450), scale(550), BufferedImage.TYPE_3BYTE_BGR);
     g = offscreen.getGraphics();
     drawTitle();
-    g.setColor(Color.white);
-    g.drawLine(0, scale(450), scale(450), scale(450));
 
     hand = new Hand(this, imageManager.getCardBack(), g);
 
@@ -381,7 +382,6 @@ class SHinterface extends JFrame
   }
 
   public void closeConnection() {
-
     // Closing Sockets on Quiting
     if (servermsg != null) servermsg.endConnection();
     if (message != null) message.endConnection();
@@ -397,13 +397,7 @@ class SHinterface extends JFrame
 
     score = new Score(this);
 
-    // redrawint title
-    g.setColor(Color.black);
-    g.fillRect(0, 0, 450, 550);
-    g.setColor(Color.white);
-    g.drawImage(imageManager.getTitle(), -40, 120, this);
-    g.setColor(Color.white);
-    g.drawLine(0, 450, 450, 450);
+    drawTitle();
     repaint();
   }
 
