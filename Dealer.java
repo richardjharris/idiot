@@ -377,9 +377,9 @@ class Dealer extends PlayerBase {
     String name = "";
     // telling whos out of the game there are out
     if (playerout == 3) { // dealer out of game
-      if (position == 1) sh.addMsg("Well done you have won the game your the first out !!");
-      else if (position == 2) sh.addMsg("You've done alright you the second out of the game");
-      else if (position == 3) sh.addMsg("Just made it, congrats your not a ShitHead !");
+      if (position >= 1 && position <= 3) {
+        sh.addMsg(FINISHED_MESSAGE[position - 1]);
+      }
       name = playersName;
     } else {
       sendCommand("out:" + position + ":", playerout);
@@ -408,7 +408,7 @@ class Dealer extends PlayerBase {
           break;
         }
       if (wholost == 3) {
-        sh.addMsg("You Lost ShitHead !!!");
+        sh.addMsg(FINISHED_MESSAGE[3]);
         sh.addMsg("Game Over");
         name = playersName;
         displayTable();

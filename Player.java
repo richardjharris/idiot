@@ -461,15 +461,8 @@ class Player extends PlayerBase {
         sh.addMsg("Otherplayer - out -  variable to Int error: " + b);
       }
 
-      boolean gameover = false;
-      if (playerPosition == 0) sh.addMsg("Position Error");
-      if (playerPosition == 1) sh.addMsg("Well done you have won the game your the first out !!");
-      else if (playerPosition == 2) sh.addMsg("You've done alright you the second out of the game");
-      else if (playerPosition == 3) sh.addMsg("Just made it, congrats your not a ShitHead !");
-      else if (playerPosition == 4) {
-        sh.addMsg("You Lost ShitHead !!!");
-        gameover = true;
-      }
+      boolean gameover = playerPosition == 4;
+      sh.addMsg(FINISHED_MESSAGE[playerPosition - 1]);
 
       outofgame[3] = true;
 

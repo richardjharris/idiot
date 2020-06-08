@@ -56,6 +56,13 @@ abstract public class PlayerBase {
   // Is thread listening for message
   boolean listen = true;
 
+  protected final static String[] FINISHED_MESSAGE = {
+    "Well done you have won the game your the first out !!",
+    "You've done alright you the second out of the game",
+    "Just made it, congrats your not a ShitHead !",
+    "You Lost ShitHead !!!"
+  };
+
   PlayerBase(SHinterface sh, Graphics g, Score score) {
     this.sh = sh;
     this.g = g;
